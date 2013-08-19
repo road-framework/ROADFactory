@@ -1,0 +1,437 @@
+<?xml version="1.0" ?>
+<project name="ROADfactory" default="install">
+	<property environment="env" />
+	<property name="src.dir" value="src" />
+	<property name="src.package.dir" value="src/au/edu/swin/ict" />
+	<property name="build.dir" value="bin" />
+	<property name="classes.dir" value="${build.dir}" />
+	<property name="players.dir" value="players" />
+	<property name="usdl.dir" value="usdl" />
+	<property name="schemas.dir" value="schemas" />
+	<property name="version" value="2.0" />
+	<property name="dist.dir" value="${ant.project.name}${version}" /> 
+	<property name="roadfactoryjar" value="${ant.project.name}.jar" />
+	<!--Put the version number here later e.g., 1.1beta-->
+	<property name="axis2.home" value="${env.AXIS2_HOME}" />
+	<property name="tomcat.home" value="${env.CATALINA_HOME}" />
+
+	<path id="lib.classpath">
+		<fileset dir="lib" includes="*.jar" />
+		<fileset dir="lib/jaxfront" includes="*.jar" />
+		<fileset dir="${axis2.home}/lib" includes="*.jar" />
+	</path>
+
+	<target name="jaxb">
+		<taskdef name="xjc" classname="com.sun.tools.xjc.XJCTask">
+			<classpath refid="lib.classpath" />
+		</taskdef>
+		<xjc schema="${schemas.dir}/smc.xsd" destdir="${src.dir}" package="au.edu.swin.ict.road.xml.bindings" />
+		<!-- <xjc schema="${schemas.dir}/JFacts.xsd" destdir="${src.dir}" package="au.edu.swin.ict.road.regulator.bindings" /> -->
+	</target>
+
+	<target name="compile">
+		<mkdir dir="${classes.dir}" />
+		<javac srcdir="${src.package.dir}" destdir="${classes.dir}" debug="true">
+			<classpath refid="lib.classpath" />
+		</javac>
+	</target>
+
+	<target name="jar" depends="clean, compile, rosas_types, usdl_types, compile_sample_clients">
+		<pathconvert property="mf-lib.classpath" pathsep=" lib/">
+			<path refid="lib.classpath" />
+			<flattenmapper />
+		</pathconvert>
+		<jar destfile="${roadfactoryjar}" basedir="${classes.dir}" excludes="PlayersReturnTypes*/**">
+			<manifest>
+				<attribute name="Class-Path" value="lib/${mf-lib.classpath}" />
+				<attribute name="Main-Class" value="au.edu.swin.ict.road.roadtest.ROADTestMain" />
+			</manifest>
+		</jar>
+
+	</target>
+	
+	<!--return types-->	
+	<target name="compilePlayerServicesAndReturnTypes">
+		<mkdir dir="${classes.dir}/PlayersReturnTypes" />
+		<javac srcdir="${players.dir}" destdir="${classes.dir}/PlayersReturnTypes" debug="true">
+			<classpath refid="lib.classpath" />
+		</javac>
+	</target>
+	<target name="compile_sample_clients">
+		<mkdir dir="${classes.dir}" />
+		<javac srcdir="sample/client/" destdir="${classes.dir}" debug="true" >
+			<classpath refid="lib.classpath" />
+		</javac>
+	</target>
+	<target name="rosas_types" depends="compilePlayerServicesAndReturnTypes">
+		<jar destfile="rosas_types.jar" basedir="${classes.dir}/PlayersReturnTypes/" excludes="*Service.class">
+			<manifest>
+				<attribute name="Class-Path" value="" />
+			</manifest>
+		</jar>
+	</target>
+	<target name="compileUSDLPlayersReturnTypes">
+			<!-- <mkdir dir="${classes.dir}/usdltypes" /> -->
+			<javac srcdir="${usdl.dir}" destdir="${classes.dir}" debug="true">
+				<classpath refid="lib.classpath" />
+			</javac>
+		</target>
+	<target name="usdl_types" depends="compileUSDLPlayersReturnTypes">
+			<jar destfile="usdl.jar" basedir="${classes.dir}" excludes="au/**, PlayersReturnTypes/**">
+				<manifest>
+					<attribute name="Class-Path" value="" />
+				</manifest>
+			</jar>
+
+		</target>
+	<target name="deploy_all_libs">		
+		  <copy todir="${axis2.home}/lib/" overwrite="false" verbose="true">
+		    <fileset dir="lib/" includes="*.jar, *.properties" />
+		  </copy>
+	</target>
+ 
+	
+	
+	<!--Add all jar dependencies and other file dependecies in here-->
+	<target name="deploy_deps_in_axis2" >
+		<!--Copy the RF jar-->
+		<copy file="${roadfactoryjar}" tofile="${axis2.home}/lib/${roadfactoryjar}" overwrite="true" verbose="true" />
+		
+		<!--Copy other jar dependencies -->
+		<copy todir="${axis2.home}/lib/" overwrite="true" verbose="true">
+		    <fileset dir="lib/" includes="*antlr*.jar" />
+		</copy>
+		<copy file="lib/att.jar" todir="${axis2.home}/lib/" overwrite="true"  verbose="true"/>
+		<copy file="lib/backport-util-concurrent-2.1.jar" todir="${axis2.home}/lib/" overwrite="true"  verbose="true"/>
+		<copy file="lib/collections-generic-4.01.jar" todir="${axis2.home}/lib/" overwrite="true"  verbose="true"/>
+		<copy todir="${axis2.home}/lib/" overwrite="true" verbose="true">
+			    <fileset dir="lib/" includes="*colt*.jar" />
+		 </copy>
+		<copy todir="${axis2.home}/lib/" overwrite="true" verbose="true">
+				<fileset dir="lib/" includes="*concurrent*.jar" />
+		</copy>
+		<copy todir="${axis2.home}/lib/" overwrite="true" verbose="true">
+		    <fileset dir="lib/" includes="*drools*.jar" />
+		</copy>
+		<copy file="lib/GantzGraf-0.9.jar" todir="${axis2.home}/lib/" overwrite="true"  verbose="true"/>
+		<copy file="lib/j3d-core-1.3.1.jar" todir="${axis2.home}/lib/" overwrite="true"  verbose="true"/>
+		<copy file="lib/java_cup.jar" todir="${axis2.home}/lib/" overwrite="true"  verbose="true"/>
+		<!--copy file="lib/javaee.jar" todir="${axis2.home}/lib/" overwrite="true"  verbose="true"/ DONT COPY TO AXIS2-->
+		<copy file="lib/javassist.jar" todir="${axis2.home}/lib/" overwrite="true"  verbose="true"/>
+		<copy file="lib/jboolexpr-1.2.jar" todir="${axis2.home}/lib/" overwrite="true"  verbose="true"/>
+		<copy file="lib/JTattoo.jar" todir="${axis2.home}/lib/" verbose="true"/>
+		<copy file="lib/jfreechart-1.0.5.jar" todir="${axis2.home}/lib/" overwrite="true"  verbose="true"/>
+		<copy file="lib/joda-time.jar" todir="${axis2.home}/lib/" overwrite="true"  verbose="true"/>
+		<copy file="lib/junit-4.5.jar" todir="${axis2.home}/lib/" overwrite="true"  verbose="true"/>
+		<copy todir="${axis2.home}/lib/" overwrite="true" verbose="true">
+	    	<fileset dir="lib/" includes="*jung*.jar" />
+		</copy>
+		<copy file="lib/jxl.jar" todir="${axis2.home}/lib/" overwrite="true"  verbose="true"/>
+		<copy file="lib/MXMLib.jar" todir="${axis2.home}/lib/" overwrite="true"  verbose="true"/>
+		<copy file="lib/paranamer-2.2.jar" todir="${axis2.home}/lib/" overwrite="true"  verbose="true"/>
+		<copy file="lib/romeo_schema.jar" todir="${axis2.home}/lib/" overwrite="true"  verbose="true"/>
+		<copy file="lib/saaj.jar" todir="${axis2.home}/lib/" overwrite="true"  verbose="true"/>
+		<copy file="lib/saaj-impl.jar" todir="${axis2.home}/lib/" overwrite="true"  verbose="true"/>
+		<copy file="lib/serendip_Prom_9_0.jar" todir="${axis2.home}/lib/" overwrite="true"  verbose="true"/>
+		<copy file="lib/slickerbox0.5.jar" todir="${axis2.home}/lib/" overwrite="true"  verbose="true"/>		
+		<!--copy file="lib/stax-api-1.0.1.jar" todir="${axis2.home}/lib/" overwrite="true"  verbose="true"/-->
+		<copy file="lib/vecmath-1.3.1.jar" todir="${axis2.home}/lib/" overwrite="true"  verbose="true"/>
+		<copy file="lib/xbean.jar" todir="${axis2.home}/lib/" overwrite="true"  verbose="true"/>
+		<copy file="lib/xbean_xpath.jar" todir="${axis2.home}/lib/" overwrite="true"  verbose="true"/>
+		<copy file="lib/xercesImpl.jar" todir="${axis2.home}/lib/" overwrite="true"  verbose="true"/>
+		<copy file="lib/xml-apis.jar" todir="${axis2.home}/lib/" overwrite="true"  verbose="true"/>
+		<copy file="lib/xmlbeans-qname.jar" todir="${axis2.home}/lib/" overwrite="true"  verbose="true"/>
+		<copy file="lib/xmlpublic.jar" todir="${axis2.home}/lib/" overwrite="true"  verbose="true"/>
+		<copy file="lib/xpp3_min.jar" todir="${axis2.home}/lib/" overwrite="true"  verbose="true"/>
+		<copy file="lib/xstream.jar" todir="${axis2.home}/lib/" overwrite="true"  verbose="true"/>
+		 
+		  
+		<!--Copy dot directory for GraphViz reqd by Serendip Admin View.-->
+		<copy todir="${tomcat.home}/bin/dot/" overwrite="true" verbose="true">
+			<fileset dir="./dot/" includes="*.*" />
+		</copy>
+		<!--Copy images directory for Serendip Admin View-->
+		<copy todir="${tomcat.home}/bin/images" overwrite="true" verbose="true">
+			<fileset dir="./images/" includes="*/**" />
+		</copy>
+		<!--Copy Serendip property file-->
+		<copy file="serendip.properties" tofile="${tomcat.home}/bin/serendip.properties" overwrite="true" verbose="true" />
+		<!--Copy log4j props-->
+		<copy file="src/log4j.properties" todir="${axis2.home}/classes/" verbose="true"/>
+	</target>
+	
+	
+	<target name="deploy_Scenario1_in_axis2" depends="deploy_deps_in_axis2" >
+		
+			<!-- copy other libraries -->
+			
+			<!--copy any other types that required by default samples-->
+	 
+			<copy file="rosas_types.jar" tofile="${axis2.home}/lib/rosas_types.jar" overwrite="true" verbose="true" />
+	 
+			<!--create the pojo directory to deploy the sample players-->
+			<copy todir="${axis2.home}/pojo" overwrite="true" verbose="true">
+				<fileset dir="${classes.dir}/PlayersReturnTypes/" excludes="*Return.class"  includes="CaseOfficerService.class, GarageService.class, TowCarService.class" />
+			</copy>
+			<!--Copy samples-->
+			<copy file="sample/Scenario1/RoSaS.xml" tofile="${axis2.home}/road_composites/RoSaS.xml" overwrite="true" verbose="true" /> 
+			<copy todir="${axis2.home}/sample/Scenario1/" overwrite="true" verbose="true">
+				<fileset dir="./sample/Scenario1/" includes="data*/**" />
+			</copy>
+			<copy todir="${tomcat.home}/bin/sample/Scenario1/" overwrite="true" verbose="true">
+				<fileset dir="./sample/Scenario1/" includes="data*/**" />
+			</copy>
+			<!--We are copying data files to both tomcat/bin and axis2/WEB-INF 
+			to make sure the samples work for both tomcat and SimpleAxis2HTTPserver-->
+		</target>
+		<target name="deploy_Scenario2_in_axis2" depends="usdl_types, deploy_deps_in_axis2"   >
+				 <!-- copy other libraries -->
+				
+				<!--copy any other types that required by default samples-->
+		 
+				<copy file="usdl.jar" tofile="${axis2.home}/lib/usdl.jar" overwrite="true" verbose="true" />
+
+				<!--create the pojo directory to deploy the sample players-->
+	 
+				<!--Copy samples-->
+				<copy file="sample/Scenario2/USDL.xml" tofile="${axis2.home}/road_composites/USDL.xml" overwrite="true" verbose="true" /> 
+				<copy todir="${axis2.home}/sample/Scenario2/" overwrite="true" verbose="true">
+					<fileset dir="./sample/Scenario2/" includes="data*/**" />
+				</copy>
+				<copy todir="${tomcat.home}/bin/sample/Scenario2/" overwrite="true" verbose="true">
+					<fileset dir="./sample/Scenario2/" includes="data*/**" />
+				</copy>
+				<!--We are copying data files to both tomcat/bin and axis2/WEB-INF 
+				to make sure the samples work for both tomcat and SimpleAxis2HTTPserver-->
+			</target>
+	<target name="deploy_Scenario3_in_axis2" depends="deploy_deps_in_axis2" >
+		
+			<!-- copy other libraries -->
+			
+			<!--copy any other types that required by default samples-->
+	 
+			<copy file="rosas_types.jar" tofile="${axis2.home}/lib/rosas_types.jar" overwrite="true" verbose="true" />
+	 
+ 
+			<!--Copy sample services-->
+			<copy todir="${axis2.home}/services/" overwrite="true" verbose="true">
+				<fileset dir="./sample/Scenario3/services" includes="*Service*/**" />
+			</copy>
+			<!--Copy samples-->
+			<copy file="sample/Scenario3/S3.xml" tofile="${axis2.home}/road_composites/S3.xml" overwrite="true" verbose="true" /> 
+			<copy todir="${axis2.home}/sample/Scenario3/" overwrite="true" verbose="true">
+				<fileset dir="./sample/Scenario3/" includes="data*/**" />
+			</copy>
+			<copy todir="${tomcat.home}/bin/sample/Scenario3/" overwrite="true" verbose="true">
+				<fileset dir="./sample/Scenario3/" includes="data*/**" />
+			</copy>
+			
+			<!--We are copying data files to both tomcat/bin and axis2/WEB-INF 
+			to make sure the samples work for both tomcat and SimpleAxis2HTTPserver-->
+			
+			<!--this file is required to run the samples -->
+			<touch file = "${axis2.home}/s3co.txt" /> 
+	</target>
+		<target name="deploy_Scenario4_in_axis2" depends=" deploy_deps_in_axis2"   >
+					 <!-- copy other libraries -->
+					
+					<!--copy any other types that required by default samples-->
+			  
+
+					<!--create the pojo directory to deploy the sample service players-->
+			 
+					<!--copy todir="${axis2.home}/pojo" overwrite="true" verbose="true">
+						<fileset dir="${classes.dir}/PlayersReturnTypes/" excludes="*Return.class" includes="*Service.class" />
+					</copy-->
+				
+					<!--Copy sample services-->
+					<copy todir="${axis2.home}/services/" overwrite="true" verbose="true">
+						<fileset dir="./sample/Scenario4/services" includes="*Service*/**" />
+					</copy>
+					<!--Copy samples-->
+					<copy file="sample/Scenario4/Test.xml" tofile="${axis2.home}/road_composites/Test.xml" overwrite="true" verbose="true" /> 
+					<copy todir="${axis2.home}/sample/Scenario4/" overwrite="true" verbose="true">
+						<fileset dir="./sample/Scenario4/" includes="data*/**" />
+					</copy>
+					<copy todir="${tomcat.home}/bin/sample/Scenario4/" overwrite="true" verbose="true">
+						<fileset dir="./sample/Scenario4/" includes="data*/**" />
+					</copy>
+					<!--We are copying data files to both tomcat/bin and axis2/WEB-INF 
+					to make sure the samples work for both tomcat and SimpleAxis2HTTPserver-->
+				</target>
+		<target name="deploy_Scenario5_in_axis2" depends=" deploy_deps_in_axis2"   >
+					 <!-- copy other libraries -->
+					
+					<!--copy any other types that required by default samples-->
+			  
+	
+					<!--create the pojo directory to deploy the sample service players-->
+					<copy todir="${axis2.home}/pojo" overwrite="true" verbose="true">
+						<fileset dir="${classes.dir}/PlayersReturnTypes/" excludes="*Return.class"  includes="S5WAS.class, S5WS1.class, S5WS2.class" />
+				 	</copy>
+		 
+	 
+					<!--Copy samples-->
+					<copy file="sample/Scenario5/weather.xml" tofile="${axis2.home}/road_composites/weather.xml" overwrite="true" verbose="true" /> 
+					<copy todir="${axis2.home}/sample/Scenario5/" overwrite="true" verbose="true">
+						<fileset dir="./sample/Scenario5/" includes="data*/**" />
+					</copy>
+					<copy todir="${tomcat.home}/bin/sample/Scenario5/" overwrite="true" verbose="true">
+						<fileset dir="./sample/Scenario5/" includes="data*/**" />
+					</copy>
+					<!--We are copying data files to both tomcat/bin and axis2/WEB-INF 
+					to make sure the samples work for both tomcat and SimpleAxis2HTTPserver-->
+	  </target>
+	<target name="deploy_Scenario6_in_axis2" depends="deploy_deps_in_axis2" >
+		
+			<!-- copy other libraries -->
+			
+			<!--copy any other types that required by default samples-->
+	 
+			<copy file="rosas_types.jar" tofile="${axis2.home}/lib/rosas_types.jar" overwrite="true" verbose="true" />
+	 
+ 
+			<!--Copy sample services-->
+			<copy todir="${axis2.home}/services/" overwrite="true" verbose="true">
+				<fileset dir="./sample/Scenario6/services" includes="*Service*/**" />
+			</copy>
+			<!--Copy samples-->
+			<copy file="sample/Scenario6/RoSAS.xml" tofile="${axis2.home}/road_composites/RoSAS.xml" overwrite="true" verbose="true" /> 
+			<copy todir="${axis2.home}/sample/Scenario6/" overwrite="true" verbose="true">
+				<fileset dir="./sample/Scenario6/" includes="data*/**" />
+			</copy>
+			<copy todir="${tomcat.home}/bin/sample/Scenario6/" overwrite="true" verbose="true">
+				<fileset dir="./sample/Scenario6/" includes="data*/**" />
+			</copy>
+			<!--We are copying data files to both tomcat/bin and axis2/WEB-INF 
+			to make sure the samples work for both tomcat and SimpleAxis2HTTPserver-->
+	</target>
+	<target name="deploy_Scenario7_in_axis2" depends="deploy_deps_in_axis2" >
+		
+			<!-- copy other libraries -->
+			
+			<!--copy any other types that required by default samples-->
+	 
+			<copy file="rosas_types.jar" tofile="${axis2.home}/lib/rosas_types.jar" overwrite="true" verbose="true" />
+	 
+			<!--Copy sample services-->
+			<copy todir="${axis2.home}/services/" overwrite="true" verbose="true">
+				<fileset dir="./sample/Scenario7/services" includes="*Service*/**" />
+			</copy>
+			<!--Copy samples-->
+			<copy file="sample/Scenario7/RoSAS7.xml" tofile="${axis2.home}/road_composites/RoSAS7.xml" overwrite="true" verbose="true" /> 
+			<copy todir="${axis2.home}/sample/Scenario7/" overwrite="true" verbose="true">
+				<fileset dir="./sample/Scenario7/" includes="data*/**" />
+			</copy>
+			<copy todir="${tomcat.home}/bin/sample/Scenario7/" overwrite="true" verbose="true">
+				<fileset dir="./sample/Scenario7/" includes="data*/**" />
+			</copy>
+			<!--We are copying data files to both tomcat/bin and axis2/WEB-INF 
+			to make sure the samples work for both tomcat and SimpleAxis2HTTPserver-->
+	</target>
+	<target name="deploy_Scenario8_in_axis2" depends=" deploy_deps_in_axis2"   >
+						 <!-- copy other libraries -->
+						
+						<!--copy any other types that required by default samples-->
+				  
+						<!--create the pojo directory to deploy the sample service players-->
+				 
+						<!--copy todir="${axis2.home}/pojo" overwrite="true" verbose="true">
+							<fileset dir="${classes.dir}/PlayersReturnTypes/" excludes="*Return.class" includes="*Service.class" />
+						</copy-->
+					
+						<!--Copy sample services-->
+						<copy todir="${axis2.home}/services/" overwrite="true" verbose="true">
+							<fileset dir="./sample/Scenario8/services" includes="*Service*/**" />
+						</copy>
+						<!--Copy samples-->
+						<copy file="sample/Scenario8/RoSAS.xml" tofile="${axis2.home}/road_composites/RoSAS.xml" overwrite="true" verbose="true" /> 
+						<copy todir="${axis2.home}/sample/Scenario8/" overwrite="true" verbose="true">
+							<fileset dir="./sample/Scenario8/" includes="data*/**" />
+						</copy>
+						<copy todir="${tomcat.home}/bin/sample/Scenario8/" overwrite="true" verbose="true">
+							<fileset dir="./sample/Scenario8/" includes="data*/**" />
+						</copy>
+						<!--We are copying data files to both tomcat/bin and axis2/WEB-INF 
+						to make sure the samples work for both tomcat and SimpleAxis2HTTPserver-->
+					</target>
+	<target name="install" depends="jar, deploy_deps_in_axis2 "/>
+	
+	<target name="zip_src" depends="distributable">
+		<!--Copy src files-->
+
+		<copy todir="${dist.dir}/src/" overwrite="true" verbose="false">
+			<fileset dir="src/" includes="au/**"  /> 		
+		</copy>			
+		<copy todir="${dist.dir}/players/" overwrite="true" verbose="false">
+			<fileset dir="players/"    /> 		
+		</copy>
+		<copy todir="${dist.dir}/schemas/" overwrite="true" verbose="false">
+					<fileset dir="schemas/"    /> 		
+				</copy>
+		<copy file="serendip.properties" tofile="${dist.dir}/serendip.properties" verbose="true"/>
+		<zip destfile="${dist.dir}_src.zip" basedir="${dist.dir}"/>
+	</target>
+	
+	<target name="distributable" depends="jar">
+			<delete dir="${dist.dir}" />		
+			<mkdir dir="${dist.dir}"  />		
+			<mkdir dir="${dist.dir}/lib"  />
+			<mkdir dir="${dist.dir}/sample"  />
+			<mkdir dir="${dist.dir}/properties"  />
+			<mkdir dir="${dist.dir}/pojo"  />
+			<copy file="build.xml" tofile="${dist.dir}/build.xml" verbose="true"/>
+			<copy file="install_in_axis2.bat" tofile="${dist.dir}/install_in_axis2.bat" verbose="true"/>
+			<copy file="README.txt" tofile="${dist.dir}/README.txt" verbose="true"/>
+			<copy file="${roadfactoryjar}" tofile="${dist.dir}/lib/${roadfactoryjar}" verbose="true"/>
+			<copy file="rosas_types.jar" tofile="${dist.dir}/lib/rosas_types.jar" verbose="true"/>
+			<copy file="usdl.jar" tofile="${dist.dir}/lib/usdl.jar" verbose="true"/>
+			<!--Copy other libs--> 
+			<copy file="lib/JTattoo.jar" todir="${dist.dir}/lib/" verbose="true"/>
+			<copy file="lib/collections-generic-4.01.jar" todir="${dist.dir}/lib/" overwrite="true"  verbose="true"/>
+			<copy file="lib/serendip_Prom_9_0.jar" todir="${dist.dir}/lib/" overwrite="true"  verbose="true"/>
+			<copy file="lib/MXMLib.jar" todir="${dist.dir}/lib/" overwrite="true"  verbose="true"/>
+			<copy todir="${dist.dir}/lib/" overwrite="true" verbose="true">
+		    	<fileset dir="lib/" includes="*jung*.jar" />
+			</copy>
+			<copy todir="${dist.dir}/lib/" overwrite="true" verbose="true">
+			    <fileset dir="lib/" includes="*drools*.jar" />
+			</copy>
+			<copy todir="${dist.dir}/lib/" overwrite="true" verbose="true">
+			    <fileset dir="lib/" includes="*antlr*.jar" />
+			</copy>
+			
+			<!--Copy samples-->
+			<copy todir="${dist.dir}/sample/" overwrite="true" verbose="true">
+				<fileset dir="sample/" includes="images/**"  />
+				<fileset dir="sample/" includes="Scenario1/**"  />
+				<fileset dir="sample/" includes="Scenario2/**"  />			
+			</copy>
+			<copy file="src/log4j.properties" tofile="${dist.dir}/properties/log4j.properties" verbose="true"/>
+			<copy file="serendip.properties" tofile="${dist.dir}/properties/serendip.properties" verbose="true"/>
+			<!--Copy dot directory for GraphViz-->
+			<copy todir="${dist.dir}/dot/" overwrite="true" verbose="true">
+				<fileset dir="./dot/" includes="*.*" />
+			</copy>
+			<!--Copy images directory for Serendip Admin View-->
+			<copy todir="${dist.dir}/images" overwrite="true" verbose="true">
+				<fileset dir="./images/" includes="*/**" />
+			</copy>
+			
+			<copy todir="${dist.dir}/pojo/" overwrite="true" verbose="true">
+				<fileset dir="${classes.dir}/PlayersReturnTypes/" excludes="*Return.class" includes="*Service.class" />
+			</copy>
+							
+			<zip destfile="${dist.dir}.zip" basedir="${dist.dir}"/>
+	 
+		</target>
+	
+	<target name="clean">
+		<delete dir="${build.dir}" />
+	</target>
+
+	<target name="clean-jar" depends="clean,jar" />
+
+	<target name="main" depends="clean,jar" />
+
+</project>

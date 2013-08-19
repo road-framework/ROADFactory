@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tns:SMC compositeRuleFile="" dataDir="" name="" routingRuleFile="" xmlns:tns="http://www.swin.edu.au/ict/road/smc" xmlns:tns1="http://www.ict.swin.edu.au/serendip/types" xmlns:tns2="http://www.swin.edu.au/ict/road/term" xmlns:tns3="http://www.swin.edu.au/ict/road/fact" xmlns:tns4="http://www.swin.edu.au/ict/road/role" xmlns:tns5="http://www.swin.edu.au/ict/road/contract" xmlns:tns6="http://www.swin.edu.au/ict/road/monitor" xmlns:tns7="http://www.swin.edu.au/ict/road/player" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.swin.edu.au/ict/road/smc smc.xsd ">
+	<!--Process Definitions are listed below-->
+	<ProcessDefinitions>
+	<tns1:ProcessDefinition id="PDgold" descr=""> 
+		<tns1:CoS>ComplainRcvd</tns1:CoS>
+		<tns1:CoT>TCPaid * GRPaid * MMNotif</tns1:CoT>
+		<tns1:BehaviorTermRefs>
+		<tns1:BehavirTermId>Complaining</tns1:BehavirTermId>
+		<tns1:BehavirTermId>Towing</tns1:BehavirTermId>
+		<tns1:BehavirTermId>Repairing</tns1:BehavirTermId>
+		</tns1:BehaviorTermRefs>
+		<tns1:Constraints>
+      			</tns1:Constraints>
+	</tns1:ProcessDefinition>
+	<tns1:ProcessDefinition id="PDSilver" descr=""> 
+		<tns1:CoS>ComplainRcvd</tns1:CoS>
+		<tns1:CoT>TCPaid * GRPaid * MMNotif</tns1:CoT>
+		<tns1:BehaviorTermRefs>
+		<tns1:BehavirTermId>Complaining</tns1:BehavirTermId>
+		<tns1:BehavirTermId>Towing</tns1:BehavirTermId>
+		<tns1:BehavirTermId>Repairing2</tns1:BehavirTermId>
+		</tns1:BehaviorTermRefs>
+		<tns1:Constraints>
+<tns1:Constraint Expression="some[]asdasdasdVal0=8" Id="PDSilver_c_1" enabled="true" soft="false"/>
+<tns1:Constraint Expression="sds[]asdasdasdVal0=8" Id="PDSilver_c_2" enabled="true" soft="false"/>
+      			</tns1:Constraints>
+	</tns1:ProcessDefinition>
+  		
+	</ProcessDefinitions>
+	
+	<!--Behavior Terms are listed below-->
+	<BehaviorTerms>
+		  <tns1:BehaviorTerm id="Complaining"> 
+<tns1:TaskRefs>
+<tns1:TaskRef Id="CO.Analyze" preEP="ComplainRcvd"	postEP="TowReqd  |  RepairReqd"  />
+<tns1:TaskRef Id="MM.Notify" preEP="MMNotif"	postEP=""  />
+</tns1:TaskRefs>
+<tns1:Constraints>
+      		</tns1:Constraints>
+		  </tns1:BehaviorTerm>
+		  <tns1:BehaviorTerm id="Towing"> 
+<tns1:TaskRefs>
+<tns1:TaskRef Id="TC.Tow" preEP="TowReqd * GRLocKnown "	postEP="TowSuccess  ^ TowFailed"  />
+<tns1:TaskRef Id="CO.PayTC" preEP="TowSuccess "	postEP="TCPaid"  />
+</tns1:TaskRefs>
+<tns1:Constraints>
+      		</tns1:Constraints>
+		  </tns1:BehaviorTerm>
+		  <tns1:BehaviorTerm id="Repairing"> 
+<tns1:TaskRefs>
+<tns1:TaskRef Id="GR.PlaceRepairOrder" preEP="RepairReqd"	postEP="RepairAccept  *  GRLocKnown"  />
+<tns1:TaskRef Id="GR.DoRepair" preEP="TowSuccess"	postEP="RepairSuccess  | RepairFailed "  />
+<tns1:TaskRef Id="GR.PlaceRepairOrder" preEP="RepairSuccess"	postEP="GRPaid * MMNotif"  />
+</tns1:TaskRefs>
+<tns1:Constraints>
+      		</tns1:Constraints>
+		  </tns1:BehaviorTerm>
+		  <tns1:BehaviorTerm id="Repairing2"> 
+<tns1:TaskRefs>
+<tns1:TaskRef Id="GR.PlaceRepairOrder" preEP="RepairReqd"	postEP="RepairAccept  *  GRLocKnown"  />
+</tns1:TaskRefs>
+<tns1:Constraints>
+<tns1:Constraint Expression="some[]asdasdasdVal0=8" Id="Repairing2_c_1" enabled="true" soft="false"/>
+<tns1:Constraint Expression="sds[]asdasdasdVal0=8" Id="Repairing2_c_2" enabled="true" soft="false"/>
+      		</tns1:Constraints>
+		  </tns1:BehaviorTerm>
+	</BehaviorTerms>
+	
+	<!--Role Definitions are listed below-->
+	<Roles>
+ 
+	</Roles>
+</tns:SMC>
+
+ 

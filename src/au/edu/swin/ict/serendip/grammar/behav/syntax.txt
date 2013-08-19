@@ -1,0 +1,31 @@
+Behavior TowingChild extends Towing{
+	Task  SendTowReq { 
+		pre "eventA"; 
+		post "eventB"; 
+		pp 2h;
+		role CO; 
+	}; 
+	
+	Task  Tow { 
+		pre "eventC * eventE"; 
+		post "eventD | (eventG * eventH)"; 
+		pp 2h;
+		role TC; 
+	}; 
+}; 
+
+Behavior TowingChild2{
+	Task  SendTowReq { 
+		pre "eventA"; 
+		post "eventB"; 
+		pp 2h;
+		role CO; 
+	}; 
+	
+	Task  Tow { 
+		pre "eventC * eventE"; 
+		post "eventD | (eventG * eventH)"; 
+		pp 2h;
+		role TC; 
+	}; 
+}; 

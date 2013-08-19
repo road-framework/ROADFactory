@@ -1,0 +1,43 @@
+import au.edu.swin.ict.road.composite.rules.events.contract.MessageRecievedEvent;
+import au.edu.swin.ict.road.composite.rules.events.contract.ObligationComplianceEvent;
+import au.edu.swin.ict.road.composite.rules.events.contract.TermExecutedEvent;
+import au.edu.swin.ict.road.composite.contract.Contract;
+
+/** Global Variables **/
+global Contract contract;
+
+/** Events **/
+declare MessageRecievedEvent
+    @role(event)
+end
+
+declare TermExecutedEvent
+    @role(event)
+    @expires(24h)
+end
+
+declare ObligationComplianceEvent
+    @role(event)
+    @expires(24h)
+end
+
+/** Permission Rules **/
+rule "sendGrLocation"
+    when
+		$msg : MessageRecievedEvent(operationName == "sendGrLocation")
+    then
+    	System.out.println("sendGrLocation interpretation ");
+    	//All the logic to evaluate the message is here. 
+		$msg.setBlocked(false);	
+		$msg.triggerEvent("GRLocKnown"); 
+end
+
+rule "payTow"
+    when
+		$msg : MessageRecievedEvent(operationName == "payTow")
+    then
+    	System.out.println("payTow interpretation ");
+    	//All the logic to evaluate the message is here. 
+		$msg.setBlocked(false);	
+		$msg.triggerEvent("TCPaid"); 
+end

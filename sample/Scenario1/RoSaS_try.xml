@@ -1,0 +1,559 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?jaxfront version=2.66;time=2011-06-27 17:36:31.846;xui=road1.xui;xsd=smc.xsd?>
+<tns:SMC xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:tns6="http://www.swin.edu.au/ict/road/player" xmlns:tns5="http://www.swin.edu.au/ict/road/monitor"
+	xmlns:tns4="http://www.swin.edu.au/ict/road/term" xsi:schemaLocation="smc smc.xsd"
+	xmlns:tns3="http://www.swin.edu.au/ict/road/contract" xmlns:tns2="http://www.swin.edu.au/ict/road/role"
+	xmlns:tns1="http://www.ict.swin.edu.au/serendip/types" xmlns:tns="http://www.swin.edu.au/ict/road/smc"
+	name="RosasSMC" dataDir="sample/Scenario1/data/" routingRuleFile="routing.drl"
+	compositeRuleFile="composite.drl">
+	
+	<!-- Given below are a bunch of process definitions -->
+	<ProcessDefinitions>
+		<!-- This is a process definition -->
+		<tns1:ProcessDefinition id="PDgold" descr="Process definitions for Gold customers">
+			<tns1:CoS>ComplainRcvd</tns1:CoS>
+			<tns1:CoT>TCPaid * GRPaid * MMNotif</tns1:CoT>
+			<tns1:BehaviorTermRefs>
+				<tns1:BehavirTermId>Complaining</tns1:BehavirTermId>
+				<tns1:BehavirTermId>Towing</tns1:BehavirTermId>
+				<tns1:BehavirTermId>Repairing</tns1:BehavirTermId>
+			</tns1:BehaviorTermRefs> 
+			<tns1:Constraints>
+				<tns1:Constraint enabled="true" Expression="(ComplainRcvd>0)->[0,5d](MMNotif>0)" Id="C1" soft="true"/>
+				<tns1:Constraint enabled="true" Expression="(ComplainRcvd>0)->[0,3d](TowSuccess>0)" Id="C2" soft="true"/>
+			</tns1:Constraints> 
+		</tns1:ProcessDefinition> 
+	</ProcessDefinitions>
+	
+	<!-- Given below are a bunch of behavior terms possibly referred by one or more business processes -->
+	<BehaviorTerms>
+		<!-- This is a behavior term -->
+		<tns1:BehaviorTerm id="Complaining">
+			<tns1:TaskRefs> 
+				<tns1:TaskRef Id="CO.Analyze" preEP=" ComplainRcvd "	postEP=" TowReqd  |  RepairReqd " performanceVal="2h"  />
+				<!-- tns1:TaskRef Id="CO.CaseClose" preEP=" GRPaid * TCPaid "		postEP=" CaseClosed " performanceVal="2h"   /-->
+				<tns1:TaskRef Id="MM.Notify" preEP=" MMNotif"	postEP="" performanceVal="2h"  />
+			</tns1:TaskRefs>
+			<tns1:Constraints></tns1:Constraints>
+		</tns1:BehaviorTerm>
+		<tns1:BehaviorTerm id="Towing">
+			<tns1:TaskRefs> 	
+				<tns1:TaskRef Id="TC.Tow"	preEP=" TowReqd * GRLocKnown " postEP=" TowSuccess  ^ TowFailed " 	performanceVal="24h" />
+				<tns1:TaskRef Id="CO.PayTC" preEP=" TowSuccess " postEP=" TCPaid " performanceVal="2h" />
+			</tns1:TaskRefs>
+			<tns1:Constraints></tns1:Constraints>
+		</tns1:BehaviorTerm>
+		<tns1:BehaviorTerm id="Repairing">
+			<tns1:TaskRefs>
+				<tns1:TaskRef Id="GR.PlaceRepairOrder" preEP=" RepairReqd " postEP=" RepairAccept  *  GRLocKnown " performanceVal="2h" />		 
+				<tns1:TaskRef Id="GR.DoRepair"	preEP=" TowSuccess " postEP=" RepairSuccess  | RepairFailed "	performanceVal="24h" /> 
+				<tns1:TaskRef Id="CO.PayGR" preEP=" RepairSuccess "	 postEP=" GRPaid * MMNotif" performanceVal="2h" />
+			</tns1:TaskRefs>
+			<tns1:Constraints></tns1:Constraints>
+		</tns1:BehaviorTerm>
+	</BehaviorTerms>
+	 <Facts>
+		<Fact name="Insurance" source="External">
+			<Identifier>MemberId</Identifier>
+			<Attributes>
+				<Attribute>Validity</Attribute>
+				<Attribute>Type</Attribute>
+				<Attribute>Priority</Attribute>
+				<Attribute>InsurancePlan</Attribute>
+			</Attributes>
+		</Fact>
+	</Facts>
+	<Roles>
+		<Role id="MM" name="Member">
+			<!-- <LinkedFacts>
+				<Fact monitor="true" provide="true" name="Insurance">
+					<AcquisitionRegime SyncInterval="0" mode="Active" />
+					<ProvisionRegime SyncInterval="0" mode="Active" />
+					<OnChange>true</OnChange>
+				</Fact>
+			</LinkedFacts> -->
+			<Tasks>
+				<tns1:Task id="Notify" isMsgDriven="false">
+					<tns1:Out deliveryType="push" isResponse="true">
+						<tns1:Operation name="complain">
+							<Parameters>
+								<Parameter>
+									<Type>String</Type>
+									<Name>memId</Name>
+								</Parameter>
+								<Parameter>
+									<Type>String</Type>
+									<Name>complain</Name>
+								</Parameter>
+							</Parameters>
+							<Return>String</Return>
+						</tns1:Operation>
+					</tns1:Out>
+					<tns1:SrcMsgs>
+						<tns1:SrcMsg contractId="CO-MM" termId="complain"
+							isResponse="true" />
+					</tns1:SrcMsgs>
+				</tns1:Task>
+			</Tasks>
+			<Description>This is member role</Description>
+		</Role>
+		<Role id="CO" name="CaseOfficer">
+			<LinkedFacts>
+				<Fact monitor="true" provide="true" name="Insurance">
+					<AcquisitionRegime SyncInterval="0" mode="Active" />
+					<ProvisionRegime SyncInterval="0" mode="Active" />
+					<OnChange>true</OnChange>
+				</Fact>
+			</LinkedFacts>
+			<Tasks>
+				<tns1:Task id="Analyze" isMsgDriven="false">
+					<tns1:Out deliveryType="push">
+						<tns1:Operation name="analyze">
+							<Parameters>
+								<Parameter>
+									<Type>String</Type>
+									<Name>memId</Name>
+								</Parameter>
+								<Parameter>
+									<Type>String</Type>
+									<Name>complainDetails</Name>
+								</Parameter>
+							</Parameters>
+							<Return>AnalyzeReturn</Return>
+						</tns1:Operation>
+					</tns1:Out>
+					<tns1:In isResponse="true">
+						<tns1:Operation name="analyze">
+							<Parameters>
+								<Parameter>
+									<Type>String</Type>
+									<Name>memId</Name>
+								</Parameter>
+								<Parameter>
+									<Type>String</Type>
+									<Name>complainDetails</Name>
+								</Parameter>
+							</Parameters>
+							<Return>AnalyzeReturn</Return>
+						</tns1:Operation>
+					</tns1:In>
+					<tns1:SrcMsgs transformation="Analyze.xsl">
+						<tns1:SrcMsg contractId="CO-MM" termId="complain"
+							isResponse="false" />
+					</tns1:SrcMsgs>
+					<tns1:ResultMsgs>
+						<tns1:ResultMsg contractId="CO-TC" termId="orderTow"
+							isResponse="false" transformation="OrderTow.xsl" />
+						<tns1:ResultMsg contractId="CO-GR" termId="orderRepair"
+							isResponse="false" transformation="OrderRepair.xsl" />
+					</tns1:ResultMsgs>
+				</tns1:Task>
+				<tns1:Task id="PayTC" isMsgDriven="false">
+					<tns1:Out deliveryType="push">
+						<tns1:Operation name="payTC">
+							<Parameters>
+								<Parameter>
+									<Type>String</Type>
+									<Name>content</Name>
+								</Parameter>
+							</Parameters>
+							<Return>String</Return>
+						</tns1:Operation>
+					</tns1:Out>
+					<tns1:In isResponse="true">
+						<tns1:Operation name="payTC">
+							<Parameters>
+								<Parameter>
+									<Type>String</Type>
+									<Name>content</Name>
+								</Parameter>
+							</Parameters>
+							<Return>String</Return>
+						</tns1:Operation>
+					</tns1:In>
+					<tns1:SrcMsgs transformation="PayTC.xsl">
+						<tns1:SrcMsg contractId="CO-TC" termId="orderTow"
+							isResponse="true" />
+					</tns1:SrcMsgs>
+					<tns1:ResultMsgs>
+						<tns1:ResultMsg contractId="CO-TC" termId="payTow"
+							isResponse="false" transformation="PayTow.xsl" />
+					</tns1:ResultMsgs>
+				</tns1:Task>
+				<tns1:Task id="PayGR" isMsgDriven="false">
+					<tns1:Out deliveryType="push">
+						<tns1:Operation name="payGR">
+							<Parameters>
+								<Parameter>
+									<Type>String</Type>
+									<Name>content</Name>
+								</Parameter>
+							</Parameters>
+							<Return>String</Return>
+						</tns1:Operation>
+
+					</tns1:Out>
+					<tns1:In isResponse="true">
+						<tns1:Operation name="payGR">
+							<Parameters>
+								<Parameter>
+									<Type>String</Type>
+									<Name>content</Name>
+								</Parameter>
+							</Parameters>
+							<Return>String</Return>
+						</tns1:Operation>
+					</tns1:In>
+					<tns1:SrcMsgs transformation="PayGR.xsl">
+						<tns1:SrcMsg contractId="CO-GR" termId="orderRepair"
+							isResponse="true" />
+					</tns1:SrcMsgs>
+					<tns1:ResultMsgs>
+						<tns1:ResultMsg contractId="CO-GR" termId="payRepair"
+							isResponse="false" transformation="PayRepair.xsl" />
+						<tns1:ResultMsg contractId="CO-MM" termId="complain"
+							isResponse="true" transformation="ComplainRes.xsl" />
+					</tns1:ResultMsgs>
+				</tns1:Task>
+				
+				<!-- 
+				<tns1:Task id="CaseClose" isMsgDriven="false">
+					<tns1:Out deliveryType="push">
+						<tns1:Operation name="caseClose">
+							<Parameters>
+								<Parameter>
+									<Type>String</Type>
+									<Name>content</Name>
+								</Parameter>
+							</Parameters>
+							<Return>String</Return>
+						</tns1:Operation>
+
+					</tns1:Out>
+					<tns1:In isResponse="true">
+						<tns1:Operation name="caseClose">
+							<Parameters>
+								<Parameter>
+									<Type>String</Type>
+									<Name>content</Name>
+								</Parameter>
+							</Parameters>
+							<Return>String</Return>
+						</tns1:Operation>
+					</tns1:In>
+					<tns1:SrcMsgs transformation="CaseClose.xsl"> 
+					</tns1:SrcMsgs>
+					<tns1:ResultMsgs> 
+						<tns1:ResultMsg contractId="CO-MM" termId="complain"
+							isResponse="true" transformation="ComplainRes.xsl" />
+					</tns1:ResultMsgs>
+				</tns1:Task> -->
+			</Tasks>
+		</Role>
+
+		<Role id="TC" name="Towcar">
+			<LinkedFacts>
+				<Fact monitor="true" provide="true" name="Insurance">
+					<AcquisitionRegime SyncInterval="0" mode="Active" />
+					<ProvisionRegime SyncInterval="0" mode="Active" />
+					<OnChange>true</OnChange>
+				</Fact>
+			</LinkedFacts>
+			<Tasks>
+				<tns1:Task id="Tow" isMsgDriven="false">
+					<tns1:Out deliveryType="push">
+						<tns1:Operation name="tow">
+							<Parameters>
+								<Parameter>
+									<Type>String</Type>
+									<Name>pickupLocation</Name>
+								</Parameter>
+								<Parameter>
+									<Type>String</Type>
+									<Name>garageLocation</Name>
+								</Parameter>
+							</Parameters>
+							<Return>TowReturn</Return>
+						</tns1:Operation>
+					</tns1:Out>
+					<tns1:In isResponse="true">
+						<tns1:Operation name="tow">
+							<Parameters>
+								<Parameter>
+									<Type>String</Type>
+									<Name>pickupLocation</Name>
+								</Parameter>
+								<Parameter>
+									<Type>String</Type>
+									<Name>garageLocation</Name>
+								</Parameter>
+							</Parameters>
+							<Return>TowReturn</Return>
+						</tns1:Operation>
+					</tns1:In>
+					<tns1:SrcMsgs transformation="Tow.xsl">
+						<tns1:SrcMsg contractId="CO-TC" termId="orderTow"
+							isResponse="false" />
+						<tns1:SrcMsg contractId="GR-TC" termId="sendGRLocation"
+							isResponse="false" />
+					</tns1:SrcMsgs>
+					<tns1:ResultMsgs>
+						<tns1:ResultMsg contractId="CO-TC" termId="orderTow"
+							isResponse="true" transformation="OrderTowRes.xsl" />
+						<tns1:ResultMsg contractId="GR-TC" termId="sendGRLocation"
+							isResponse="true" transformation="SendGRLocationRes.xsl" />
+					</tns1:ResultMsgs>
+				</tns1:Task>
+			</Tasks>
+		</Role>
+
+		<Role id="GR" name="Garage">
+			<!-- <LinkedFacts>
+				<Fact monitor="true" provide="true" name="Insurance">
+					<AcquisitionRegime SyncInterval="0" mode="Active" />
+					<ProvisionRegime SyncInterval="0" mode="Active" />
+					<OnChange>true</OnChange>
+				</Fact>
+			</LinkedFacts> -->
+			<Tasks>
+				<tns1:Task id="PlaceRepairOrder" isMsgDriven="false">
+					<tns1:Out deliveryType="push">
+						<tns1:Operation name="placeRepairOrder">
+							<Parameters>
+								<Parameter>
+									<Type>String</Type>
+									<Name>content</Name>
+								</Parameter>
+							</Parameters>
+							<Return>String</Return>
+						</tns1:Operation>
+					</tns1:Out>
+					<tns1:In isResponse="true">
+						<tns1:Operation name="placeRepairOrder">
+							<Parameters>
+								<Parameter>
+									<Type>String</Type>
+									<Name>content</Name>
+								</Parameter>
+							</Parameters>
+							<Return>String</Return>
+						</tns1:Operation>
+					</tns1:In>
+					<tns1:SrcMsgs transformation="PlaceRepairOrder.xsl">
+						<tns1:SrcMsg contractId="CO-GR" termId="orderRepair"
+							isResponse="false" />
+					</tns1:SrcMsgs>
+					<tns1:ResultMsgs>
+						<tns1:ResultMsg contractId="GR-TC" termId="sendGRLocation"
+							isResponse="false" transformation="SendGRLocation.xsl" />
+					</tns1:ResultMsgs>
+				</tns1:Task>
+				<tns1:Task id="DoRepair" isMsgDriven="false">
+					<!--
+						We need this out to create a fresh message without having to wait
+						for the sendGRLocation response
+					-->
+					<!--
+						<tns1:Out deliveryType="push">
+						<tns1:Transformation>Repair.xsl</tns1:Transformation> </tns1:Out>
+					-->
+					<tns1:Out deliveryType="push">
+						<tns1:Operation name="doRepair">
+							<Parameters>
+								<Parameter>
+									<Type>String</Type>
+									<Name>content</Name>
+								</Parameter>
+							</Parameters>
+							<Return>String</Return>
+						</tns1:Operation>
+					</tns1:Out>
+					<tns1:In isResponse="true">
+						<tns1:Operation name="doRepair">
+							<Parameters>
+								<Parameter>
+									<Type>String</Type>
+									<Name>content</Name>
+								</Parameter>
+							</Parameters>
+							<Return>String</Return>
+						</tns1:Operation>
+					</tns1:In>
+					<tns1:SrcMsgs transformation="DoRepair.xsl">
+						<tns1:SrcMsg contractId="GR-TC" termId="sendGRLocation"
+							isResponse="true" />
+					</tns1:SrcMsgs>
+					<tns1:ResultMsgs>
+						<tns1:ResultMsg contractId="CO-GR" termId="orderRepair"
+							isResponse="true" transformation="OrderRepairRes.xsl" />
+					</tns1:ResultMsgs>
+
+				</tns1:Task>
+			</Tasks>
+			<Description>Description</Description>
+		</Role>
+	</Roles>
+	<Contracts>
+		<Contract id="CO-MM" type="permissive" ruleFile="co-mm.drl">
+			<LinkedFacts>
+				<Fact name="Insurance" />
+			</LinkedFacts>
+			<Abstract>false</Abstract>
+			<State>Incipient</State>
+			<Terms>
+				<Term id="complain" name="Tow ordering term">
+					<Operation name="complain">
+						<Parameters>
+							<Parameter>
+								<Type>String</Type>
+								<Name>memId</Name>
+							</Parameter>
+							<Parameter>
+								<Type>String</Type>
+								<Name>complain</Name>
+							</Parameter>
+						</Parameters>
+						<Return>String</Return>
+					</Operation>
+					<Direction>BtoA</Direction>
+					<Description>Term for complaining</Description>
+				</Term>
+			</Terms>
+			<RoleAID>CO</RoleAID>
+			<RoleBID>MM</RoleBID>
+			<Description>This is the contract btwn the CO and MM
+			</Description>
+		</Contract>
+		<Contract id="CO-TC" type="permissive" ruleFile="co-tc.drl">
+			<LinkedFacts>
+				<Fact name="Insurance" />
+			</LinkedFacts>
+			<Abstract>false</Abstract>
+			<State>Incipient</State>
+			<Terms>
+				<Term id="orderTow" name="Tow ordering term">
+					<Operation name="orderTow">
+						<Parameters>
+							<Parameter>
+								<Type>String</Type>
+								<Name>content</Name>
+							</Parameter>
+						</Parameters>
+						<Return>String</Return>
+					</Operation>
+					<Direction>AtoB</Direction>
+					<Description>Term for ordering a towing</Description>
+				</Term>
+				<Term id="payTow" name="Term for payment">
+					<Operation name="payTow">
+						<Parameters>
+							<Parameter>
+								<Type>String</Type>
+								<Name>content</Name>
+							</Parameter>
+						</Parameters>
+						<Return>void</Return>
+					</Operation>
+					<Direction>AtoB</Direction>
+					<Description>Term for paying</Description>
+				</Term>
+			</Terms>
+			<RoleAID>CO</RoleAID>
+			<RoleBID>TC</RoleBID>
+			<Description>This is the contract btwn the CO and TC
+			</Description>
+		</Contract>
+		<Contract id="CO-GR" type="permissive" ruleFile="co-gr.drl">
+			<LinkedFacts>
+				<Fact name="Insurance" />
+			</LinkedFacts>
+			<Abstract>false</Abstract>
+			<State>Incipient</State>
+			<Terms>
+				<Term id="orderRepair" name="Repair ordering term">
+					<Operation name="orderRepair">
+						<Parameters>
+							<Parameter>
+								<Type>String</Type>
+								<Name>content</Name>
+							</Parameter>
+						</Parameters>
+						<Return>String</Return>
+					</Operation>
+					<Direction>AtoB</Direction>
+					<Description>Term for ordering a repair</Description>
+				</Term>
+				<Term id="payRepair" name="Payment for GR">
+					<Operation name="payRepair">
+						<Parameters>
+							<Parameter>
+								<Type>String</Type>
+								<Name>content</Name>
+							</Parameter>
+						</Parameters>
+						<Return>void</Return>
+					</Operation>
+					<Direction>AtoB</Direction>
+					<Description>Term for paying the Garage</Description>
+				</Term>
+			</Terms>
+			<RoleAID>CO</RoleAID>
+			<RoleBID>GR</RoleBID>
+			<Description>This is the contract btwn the CO and GR
+			</Description>
+		</Contract>
+		<Contract id="GR-TC" type="permissive" ruleFile="gr-tc.drl">
+			<LinkedFacts>
+				<Fact name="Insurance" />
+			</LinkedFacts>
+			<Abstract>false</Abstract>
+			<State>Incipient</State>
+			<Terms>
+				<Term id="sendGRLocation" name="term to send the garage location">
+					<Operation name="sendGRLocation">
+						<Parameters>
+							<Parameter>
+								<Type>String</Type>
+								<Name>addressOfGR</Name>
+							</Parameter>
+						</Parameters>
+						<Return>String</Return>
+					</Operation>
+					<Direction>AtoB</Direction>
+				</Term>
+
+			</Terms>
+			<RoleAID>GR</RoleAID>
+			<RoleBID>TC</RoleBID>
+			<Description>This is the contract btwn the GR and TC
+			</Description>
+		</Contract>
+	</Contracts>
+	<PlayerBindings>
+		<PlayerBinding id="myGR">
+			<Endpoint>http://localhost:8080/axis2/services/GarageService</Endpoint>
+			<Roles>
+				<RoleID>GR</RoleID>
+			</Roles>
+			<Description>Description</Description>
+		</PlayerBinding>
+		<PlayerBinding id="myTC">
+			<Endpoint>http://localhost:8080/axis2/services/TowCarService</Endpoint>
+			<Roles>
+				<RoleID>TC</RoleID>
+			</Roles>
+			<Description>Description</Description>
+		</PlayerBinding>
+		<PlayerBinding id="myCO">
+			<Endpoint>http://localhost:8080/axis2/services/CaseOfficerService</Endpoint>
+			<Roles>
+				<RoleID>CO</RoleID>
+			</Roles>
+			<Description>Description</Description>
+		</PlayerBinding>
+	</PlayerBindings>
+	<OrganiserBinding>OrganiserBinding</OrganiserBinding>
+	<Description>Description</Description>
+ 
+</tns:SMC>

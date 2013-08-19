@@ -1,0 +1,13 @@
+// $ANTLR : ser.g -> SerLexerTokenTypes.txt$
+SerLexer    // output token vocab name
+STRING=4
+WS=5
+LINE_COMMENT=6
+LBRACE=7
+RBRACE=8
+EQUALS=9
+SEMI=10
+SCRIPT=11
+BLOCK=12
+COMMAND=13
+PROPERTY=14

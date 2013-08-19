@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.swin.edu.au/ict/road/regulator/Facts" xmlns:tns="http://www.swin.edu.au/ict/road/regulator/Facts" elementFormDefault="unqualified">
+
+    <element name="facts">
+    <complexType>
+    	<sequence>
+    		<element name="fact" type="tns:JFactType" maxOccurs="unbounded" minOccurs="1"></element>
+    	</sequence>
+    </complexType>
+    </element>
+    
+    
+
+    <complexType name="JFactType">
+    	<sequence>
+    		<element name="attributes" type="tns:JFactAttributesType"
+    			maxOccurs="1" minOccurs="1">
+    		</element>
+    		<element name="identifier" type="tns:JFactIdentifierType"
+    			maxOccurs="1" minOccurs="1">
+    		</element>
+    		<element name="name" type="string" maxOccurs="1" minOccurs="1"></element>
+    		<element name="source" type="string" maxOccurs="1" minOccurs="1"></element>
+    	</sequence>
+    </complexType>
+
+    <complexType name="JFactAttributesType">
+    	<sequence>
+    		<element name="attribute" type="tns:JFactAttributeType"
+    			maxOccurs="unbounded" minOccurs="1">
+    		</element>
+    	</sequence>
+    </complexType>
+    
+    <complexType name="JFactIdentifierType">
+    	<sequence>
+    		<element name="identifierKey" type="string" maxOccurs="1" minOccurs="1"></element>
+    		<element name="identifierValue" type="string" maxOccurs="1" minOccurs="1"></element>
+    	</sequence>
+    </complexType>
+    
+    <complexType name="JFactAttributeType">
+    	<sequence>
+    		<element name="attributeKey" type="string" maxOccurs="1" minOccurs="1"></element>
+    		<element name="attributeValue" type="string" maxOccurs="1" minOccurs="1"></element>
+    	</sequence>
+    </complexType>
+</schema>

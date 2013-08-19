@@ -1,0 +1,10 @@
+// $ANTLR : eventpattern.g -> EventPatternParserTokenTypes.txt$
+EventPatternParser    // output token vocab name
+OR=4
+AND=5
+WORD=6
+WS=7
+LPAREN=8
+RPAREN=9
+SEMI=10
+INT=11

@@ -1,0 +1,921 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tns:SMC compositeRuleFile="" dataDir="" name="RoSAS" routingRuleFile="" xmlns:p="http://www.epml.de" xmlns:tns="http://www.swin.edu.au/ict/road/smc" xmlns:tns1="http://www.ict.swin.edu.au/serendip/types" xmlns:tns2="http://www.swin.edu.au/ict/road/term" xmlns:tns3="http://www.swin.edu.au/ict/road/fact" xmlns:tns4="http://www.swin.edu.au/ict/road/role" xmlns:tns5="http://www.swin.edu.au/ict/road/contract" xmlns:tns6="http://www.swin.edu.au/ict/road/monitor" xmlns:tns7="http://www.swin.edu.au/ict/road/player" xmlns:tns8="http://www.example.org/RuntimeSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.swin.edu.au/ict/road/smc smc.xsd ">
+	<ProcessDefinitions>
+		<tns1:ProcessDefinition id="pdSilv" descr="">
+			<tns1:CoS>eComplainRcvdSilv</tns1:CoS>
+			<tns1:CoT>(eMMNotifDone * eTTPaid * eGRPaid) ^ eExceptionHandled
+			</tns1:CoT>
+			<tns1:BehaviorTermRefs>
+				<tns1:BehavirTermId>bComplaining</tns1:BehavirTermId>
+				<tns1:BehavirTermId>bTowing</tns1:BehavirTermId>
+				<tns1:BehavirTermId>bRepairing</tns1:BehavirTermId>
+				<tns1:BehavirTermId>bHandleAnyException</tns1:BehavirTermId>
+			</tns1:BehaviorTermRefs>
+			<tns1:Constraints>
+				<tns1:Constraint Id="pdSilv_c1"
+					Expression="(eComplainRcvdSilv>0)->[0,7d](eMMNotifDone>0)" enabled="true"
+					soft="false" />
+			</tns1:Constraints>
+		</tns1:ProcessDefinition>
+		<tns1:ProcessDefinition id="pdGold" descr="">
+			<tns1:CoS>eComplainRcvdGold</tns1:CoS>
+			<tns1:CoT>(eMMNotifDone * eTTPaid * eGRPaid * eTaxiPaid) ^
+				eExceptionHandled</tns1:CoT>
+			<tns1:BehaviorTermRefs>
+				<tns1:BehavirTermId>bComplainingGold</tns1:BehavirTermId>
+				<tns1:BehavirTermId>bTowing</tns1:BehavirTermId>
+				<tns1:BehavirTermId>bRepairing</tns1:BehavirTermId>
+				<tns1:BehavirTermId>bTaxiProviding</tns1:BehavirTermId>
+				<tns1:BehavirTermId>bHandleAnyException</tns1:BehavirTermId>
+			</tns1:BehaviorTermRefs>
+			<tns1:Constraints>
+				<tns1:Constraint Id="pdGold_c1"
+					Expression="(eComplainRcvdGold>0)->[0,5d](eMMNotifDone>0)" enabled="true"
+					soft="false" />
+			</tns1:Constraints>
+		</tns1:ProcessDefinition>
+		<tns1:ProcessDefinition id="pdPlat" descr="">
+			<tns1:CoS>eComplainRcvdPlat</tns1:CoS>
+			<tns1:CoT>(eMMNotifDone * eTTPaid * eGRPaid * eTaxiPaid * eHotelPaid)
+				^ eExceptionHandled</tns1:CoT>
+			<tns1:BehaviorTermRefs>
+				<tns1:BehavirTermId>bComplainingPlat</tns1:BehavirTermId>
+				<tns1:BehavirTermId>bTowingAlt2</tns1:BehavirTermId>
+				<tns1:BehavirTermId>bRepairing</tns1:BehavirTermId>
+				<tns1:BehavirTermId>bTaxiProviding</tns1:BehavirTermId>
+				<tns1:BehavirTermId>bAccommodationProviding</tns1:BehavirTermId>
+				<tns1:BehavirTermId>bHandleAnyException</tns1:BehavirTermId>
+			</tns1:BehaviorTermRefs>
+			<tns1:Constraints>
+				<tns1:Constraint Id="pdPlat_c1"
+					Expression="(eComplainRcvdPlat>0)->[0,5d](eMMNotifDone>0)" enabled="true"
+					soft="false" />
+			</tns1:Constraints>
+		</tns1:ProcessDefinition>
+
+	</ProcessDefinitions>
+
+	<!--Behavior Terms are listed below -->
+	<BehaviorTerms>
+		<tns1:BehaviorTerm id="bComplaining" isAbstract="false">
+			<tns1:TaskRefs>
+				<tns1:TaskRef Id="CO.tAnalyze" preEP="eComplainRcvdSilv"
+					postEP="eTowReqd *  eRepairReqd" />
+				<tns1:TaskRef Id="CO.tNotify" preEP="eMMNotif" postEP="eMMNotifDone" />
+			</tns1:TaskRefs>
+			<tns1:Constraints>
+			</tns1:Constraints>
+		</tns1:BehaviorTerm>
+		<tns1:BehaviorTerm id="bComplainingGold" extends="bComplaining"
+			isAbstract="false">
+			<tns1:TaskRefs>
+				<tns1:TaskRef Id="CO.tAnalyze" preEP="eComplainRcvdGold"
+					postEP="eTowReqd *  eRepairReqd  * eTaxiReqd" />
+			</tns1:TaskRefs>
+			<tns1:Constraints>
+			</tns1:Constraints>
+		</tns1:BehaviorTerm>
+		<tns1:BehaviorTerm id="bComplainingPlat" extends="bComplaining"
+			isAbstract="false">
+			<tns1:TaskRefs>
+				<tns1:TaskRef Id="CO.tAnalyze" preEP="eComplainRcvdPlat"
+					postEP="eTowReqd *  eRepairReqd  * eTaxiReqd * eAccommoReqd" />
+			</tns1:TaskRefs>
+			<tns1:Constraints>
+			</tns1:Constraints>
+		</tns1:BehaviorTerm>
+		<tns1:BehaviorTerm id="bRepairing" isAbstract="false">
+			<tns1:TaskRefs>
+				<tns1:TaskRef Id="GR.tAcceptRepairOrder" preEP="eRepairReqd"
+					postEP="eDestinationKnown" />
+				<tns1:TaskRef Id="GR.tDoRepair" preEP="eTowSuccess"
+					postEP="eRepairSuccess ^ eRepairFailed" />
+				<tns1:TaskRef Id="CO.tPayGR" preEP="eRepairSuccess"
+					postEP="eGRPaid * eMMNotif" />
+			</tns1:TaskRefs>
+			<tns1:Constraints>
+				<tns1:Constraint Id="bRepairing_c1"
+					Expression="(eRepairSuccess>0)->(eGRPaid>0)" enabled="true" soft="false" />
+			</tns1:Constraints>
+		</tns1:BehaviorTerm>
+		<tns1:BehaviorTerm id="bTowing" isAbstract="false">
+			<tns1:TaskRefs>
+				<tns1:TaskRef Id="TT.tTow" preEP="eTowReqd * eDestinationKnown"
+					postEP="eTowSuccess ^ eTowFailed" />
+				<tns1:TaskRef Id="CO.tPayTT" preEP="eTowSuccess"
+					postEP="eTTPaid" />
+			</tns1:TaskRefs>
+			<tns1:Constraints>
+				<tns1:Constraint Id="bTowing_c1" Expression="(eTowSuccess>0)->(eTTPaid>0)"
+					enabled="true" soft="false" />
+			</tns1:Constraints>
+		</tns1:BehaviorTerm>
+		<tns1:BehaviorTerm id="bTaxiProviding" isAbstract="false">
+			<tns1:TaskRefs>
+				<tns1:TaskRef Id="CO.tPlaceTaxiOrder" preEP="eTaxiReqd"
+					postEP="eTaxiOrderPlaced" />
+				<tns1:TaskRef Id="TX.tProvideTaxi" preEP="eTaxiOrderPlaced"
+					postEP="eTaxiProvided" />
+				<tns1:TaskRef Id="CO.tPayTaxi" preEP="eTaxiProvided"
+					postEP="eTaxiPaid" />
+			</tns1:TaskRefs>
+			<tns1:Constraints>
+				<tns1:Constraint Id="bTaxiProviding_c1" Expression="(eTaxiReqd>0)->(eTaxiPaid>0)"
+					enabled="true" soft="false" />
+				<tns1:Constraint Id="bTaxiProviding_c2"
+					Expression="(eTaxiOrderPlaced>0)->(eTaxiProvided>0)" enabled="true"
+					soft="false" />
+			</tns1:Constraints>
+		</tns1:BehaviorTerm>
+		<tns1:BehaviorTerm id="bAccommodationProviding"
+			isAbstract="false">
+			<tns1:TaskRefs>
+				<tns1:TaskRef Id="CO.tBookHotel" preEP="eAccommoReqd"
+					postEP="eAccommoReqested" />
+				<tns1:TaskRef Id="HT.tConfirmBooking" preEP="eAccommoReqested"
+					postEP="eAccommoBookingConfirmed" />
+				<tns1:TaskRef Id="CO.tPayHotel" preEP="eAccommoBookingConfirmed"
+					postEP="eHotelPaid" />
+			</tns1:TaskRefs>
+			<tns1:Constraints>
+			</tns1:Constraints>
+		</tns1:BehaviorTerm>
+		<tns1:BehaviorTerm id="bHandleAnyException"
+			isAbstract="false">
+			<tns1:TaskRefs>
+				<tns1:TaskRef Id="CO.tHandleException" preEP="eTowFailed ^ eRepairFailed"
+					postEP="eExceptionHandled" />
+			</tns1:TaskRefs>
+			<tns1:Constraints>
+			</tns1:Constraints>
+		</tns1:BehaviorTerm>
+		<tns1:BehaviorTerm id="bTowingAlt" extends="bTowing"
+			isAbstract="false">
+			<tns1:TaskRefs>
+				<tns1:TaskRef Id="CO.tAlertTowDone" preEP="eTowSuccess"
+					postEP="eMemberTowAlerted" />
+			</tns1:TaskRefs>
+			<tns1:Constraints>
+			</tns1:Constraints>
+		</tns1:BehaviorTerm>
+		<tns1:BehaviorTerm id="bTowingAlt2" extends="bTowing"
+			isAbstract="false">
+			<tns1:TaskRefs>
+				<tns1:TaskRef Id="TT.tTow"
+					preEP="eTowReqd * eDestinationKnown * eTaxiProvided" postEP="" />
+			</tns1:TaskRefs>
+			<tns1:Constraints>
+			</tns1:Constraints>
+		</tns1:BehaviorTerm>
+	</BehaviorTerms>
+
+	<!--Contract Definitions will be listed below -->
+	<Contracts>
+		<Contract id="CO_MM" type="permissive" ruleFile="CO_MM.drl">
+			<Abstract>false</Abstract>
+			<State>Incipient</State>
+			<LinkedFacts>
+			</LinkedFacts>
+			<Terms>
+				<Term id="complain" name="complain">
+					<Operation name="complain">
+						<Parameters>
+							<Parameter>
+								<Type>String</Type>
+								<Name>memId</Name>
+							</Parameter>
+							<Parameter>
+								<Type>String</Type>
+								<Name>complainDetails</Name>
+							</Parameter>
+						</Parameters>
+						<Return>String</Return>
+					</Operation>
+					<Direction>BtoA</Direction>
+					<Description>Term for complain</Description>
+				</Term>
+			</Terms>
+			<RoleAID>CO</RoleAID>
+			<RoleBID>MM</RoleBID>
+			<Description>This is the contract btwn the CO and MM
+			</Description>
+		</Contract>
+		<Contract id="CO_TT" type="permissive" ruleFile="CO_TT.drl">
+			<Abstract>false</Abstract>
+			<State>Incipient</State>
+			<LinkedFacts>
+				<Fact name="TowCounter" />
+				<Fact name="ContractState" />
+			</LinkedFacts>
+			<Terms>
+				<Term id="orderTow" name="orderTow">
+					<Operation name="orderTow">
+						<Parameters>
+							<Parameter>
+								<Type>String</Type>
+								<Name>pickupInfo</Name>
+							</Parameter>
+						</Parameters>
+						<Return>String</Return>
+					</Operation>
+					<Direction>AtoB</Direction>
+					<Description>Term for orderTow</Description>
+				</Term>
+				<Term id="payTow" name="payTow">
+					<Operation name="payTow">
+						<Parameters>
+							<Parameter>
+								<Type>String</Type>
+								<Name>paymentInfo</Name>
+							</Parameter>
+						</Parameters>
+						<Return>void</Return>
+					</Operation>
+					<Direction>AtoB</Direction>
+					<Description>Term for payTow</Description>
+				</Term>
+			</Terms>
+			<RoleAID>CO</RoleAID>
+			<RoleBID>TT</RoleBID>
+			<Description>This is the contract btwn the CO and TT
+			</Description>
+		</Contract>
+		<Contract id="CO_GR" type="permissive" ruleFile="CO_GR.drl">
+			<Abstract>false</Abstract>
+			<State>Incipient</State>
+			<LinkedFacts>
+				<Fact name="ContractState" />
+			</LinkedFacts>
+			<Terms>
+				<Term id="orderRepair" name="orderRepair">
+					<Operation name="orderRepair">
+						<Parameters>
+							<Parameter>
+								<Type>String</Type>
+								<Name>repairInfo</Name>
+							</Parameter>
+						</Parameters>
+						<Return>String</Return>
+					</Operation>
+					<Direction>AtoB</Direction>
+					<Description>Term for orderRepair</Description>
+				</Term>
+				<Term id="payRepair" name="payRepair">
+					<Operation name="payRepair">
+						<Parameters>
+							<Parameter>
+								<Type>String</Type>
+								<Name>paymentInfo</Name>
+							</Parameter>
+						</Parameters>
+						<Return>void</Return>
+					</Operation>
+					<Direction>AtoB</Direction>
+					<Description>Term for payRepair</Description>
+				</Term>
+			</Terms>
+			<RoleAID>CO</RoleAID>
+			<RoleBID>GR</RoleBID>
+			<Description>This is the contract btwn the CO and GR
+			</Description>
+		</Contract>
+		<Contract id="CO_TX" type="permissive" ruleFile="CO_TX.drl">
+			<Abstract>false</Abstract>
+			<State>Incipient</State>
+			<LinkedFacts>
+				<Fact name="ContractState" />
+			</LinkedFacts>
+			<Terms>
+				<Term id="orderTaxi" name="orderTaxi">
+					<Operation name="orderTaxi">
+						<Parameters>
+							<Parameter>
+								<Type>String</Type>
+								<Name>taxiInfo</Name>
+							</Parameter>
+						</Parameters>
+						<Return>String</Return>
+					</Operation>
+					<Direction>AtoB</Direction>
+					<Description>Term for orderTaxi</Description>
+				</Term>
+				<Term id="payTaxi" name="payTaxi">
+					<Operation name="payTaxi">
+						<Parameters>
+							<Parameter>
+								<Type>String</Type>
+								<Name>paymentInfo</Name>
+							</Parameter>
+						</Parameters>
+						<Return>void</Return>
+					</Operation>
+					<Direction>AtoB</Direction>
+					<Description>Term for payTaxi</Description>
+				</Term>
+			</Terms>
+			<RoleAID>CO</RoleAID>
+			<RoleBID>TX</RoleBID>
+			<Description>This is the contract btwn the CO and TX
+			</Description>
+		</Contract>
+		<Contract id="GR_TT" type="permissive" ruleFile="GR_TT.drl">
+			<Abstract>false</Abstract>
+			<State>Incipient</State>
+			<LinkedFacts>
+				<Fact name="ContractState" />
+			</LinkedFacts>
+			<Terms>
+				<Term id="sendGRLocation" name="sendGRLocation">
+					<Operation name="sendGRLocation">
+						<Parameters>
+							<Parameter>
+								<Type>String</Type>
+								<Name>addressOfGarage</Name>
+							</Parameter>
+						</Parameters>
+						<Return>String</Return>
+					</Operation>
+					<Direction>AtoB</Direction>
+					<Description>Term for sendGRLocation</Description>
+				</Term>
+			</Terms>
+			<RoleAID>GR</RoleAID>
+			<RoleBID>TT</RoleBID>
+			<Description>This is the contract btwn the GR and TT
+			</Description>
+		</Contract>
+		<Contract id="CO_HT" type="permissive" ruleFile="CO_HT.drl">
+			<Abstract>false</Abstract>
+			<State>Incipient</State>
+			<LinkedFacts>
+				<Fact name="ContractState" />
+			</LinkedFacts>
+			<Terms>
+				<Term id="orderHotel" name="orderHotel">
+					<Operation name="orderHotel">
+						<Parameters>
+							<Parameter>
+								<Type>String</Type>
+								<Name>guestName</Name>
+							</Parameter>
+						</Parameters>
+						<Return>String</Return>
+					</Operation>
+					<Direction>AtoB</Direction>
+					<Description>Term for orderHotel</Description>
+				</Term>
+				<Term id="payHotel" name="payHotel">
+					<Operation name="payHotel">
+						<Parameters>
+							<Parameter>
+								<Type>String</Type>
+								<Name>paymentInfo</Name>
+							</Parameter>
+						</Parameters>
+						<Return>void</Return>
+					</Operation>
+					<Direction>AtoB</Direction>
+					<Description>Term for payHotel</Description>
+				</Term>
+			</Terms>
+			<RoleAID>CO</RoleAID>
+			<RoleBID>HT</RoleBID>
+			<Description>This is the contract btwn the CO and HT
+			</Description>
+		</Contract>
+	</Contracts>
+
+	<!--Role Definitions will be listed below -->
+	<Roles>
+		<Role id="CO" name="CO">
+			<Tasks>
+				<tns1:Task id="tNotify" isMsgDriven="false">
+					<tns1:Out deliveryType="push">
+						<tns1:Operation name="tNotify">
+							<Return>Return</Return>
+						</tns1:Operation>
+					</tns1:Out>
+					<tns1:In isResponse="true">
+					</tns1:In>
+					<tns1:ResultMsgs>
+						<tns1:ResultMsg contractId="CO_MM" termId="complain"
+							isResponse="true" transformation="CO_tNotify_CO_MM_complain_Res.xsl" />
+					</tns1:ResultMsgs>
+				</tns1:Task>
+				<tns1:Task id="tAnalyze" isMsgDriven="false">
+					<tns1:Out deliveryType="push">
+						<tns1:Operation name="tAnalyze">
+							<Return>Return</Return>
+						</tns1:Operation>
+					</tns1:Out>
+					<tns1:In isResponse="true">
+					</tns1:In>
+					<tns1:SrcMsgs transformation="CO_tAnalyze.xsl">
+						<tns1:SrcMsg contractId="CO_MM" termId="complain"
+							isResponse="false" />
+					</tns1:SrcMsgs>
+					<tns1:ResultMsgs>
+						<tns1:ResultMsg contractId="CO_TT" termId="orderTow"
+							isResponse="false" transformation="CO_tAnalyze_CO_TT_orderTow_Req.xsl" />
+						<tns1:ResultMsg contractId="CO_GR" termId="orderRepair"
+							isResponse="false" transformation="CO_tAnalyze_CO_GR_orderRepair_Req.xsl" />
+						<tns1:ResultMsg contractId="CO_TX" termId="orderTaxi"
+							isResponse="false" transformation="CO_tAnalyze_CO_TX_orderTaxi_Req.xsl" />
+						<tns1:ResultMsg contractId="CO_HT" termId="orderHotel"
+							isResponse="false" transformation="CO_tAnalyze_CO_HT_orderHotel_Req.xsl" />
+					</tns1:ResultMsgs>
+				</tns1:Task>
+				<tns1:Task id="tPayGR" isMsgDriven="false">
+					<tns1:Out deliveryType="push">
+						<tns1:Operation name="tPayGR">
+							<Return>Return</Return>
+						</tns1:Operation>
+					</tns1:Out>
+					<tns1:In isResponse="true">
+					</tns1:In>
+					<tns1:SrcMsgs transformation="CO_tPayGR.xsl">
+						<tns1:SrcMsg contractId="CO_GR" termId="orderRepair"
+							isResponse="true" />
+					</tns1:SrcMsgs>
+					<tns1:ResultMsgs>
+						<tns1:ResultMsg contractId="CO_GR" termId="payRepair"
+							isResponse="false" transformation="CO_tPayGR_CO_GR_payRepair_Req.xsl" />
+						<tns1:ResultMsg contractId="CO_MM" termId="complain"
+							isResponse="true" transformation="CO_tPayGR_CO_MM_complain_Res.xsl" />
+					</tns1:ResultMsgs>
+				</tns1:Task>
+				<tns1:Task id="tPayTT" isMsgDriven="false">
+					<tns1:Out deliveryType="push">
+						<tns1:Operation name="tPayTT">
+							<Return>Return</Return>
+						</tns1:Operation>
+					</tns1:Out>
+					<tns1:In isResponse="true">
+					</tns1:In>
+					<tns1:SrcMsgs transformation="CO_tPayTT.xsl">
+						<tns1:SrcMsg contractId="CO_TT" termId="orderTow"
+							isResponse="true" />
+					</tns1:SrcMsgs>
+					<tns1:ResultMsgs>
+						<tns1:ResultMsg contractId="CO_TT" termId="payTow"
+							isResponse="false" transformation="CO_tPayTT_CO_TT_payTow_Req.xsl" />
+					</tns1:ResultMsgs>
+				</tns1:Task>
+				<tns1:Task id="tPlaceTaxiOrder" isMsgDriven="false">
+					<tns1:Out deliveryType="push">
+						<tns1:Operation name="tPlaceTaxiOrder">
+							<Return>Return</Return>
+						</tns1:Operation>
+					</tns1:Out>
+					<tns1:In isResponse="true">
+					</tns1:In>
+					<tns1:ResultMsgs>
+						<tns1:ResultMsg contractId="CO_TX" termId="orderTaxi"
+							isResponse="false" transformation="CO_tPlaceTaxiOrder_CO_TX_orderTaxi_Req.xsl" />
+					</tns1:ResultMsgs>
+				</tns1:Task>
+				<tns1:Task id="tPayTaxi" isMsgDriven="false">
+					<tns1:Out deliveryType="push">
+						<tns1:Operation name="tPayTaxi">
+							<Return>Return</Return>
+						</tns1:Operation>
+					</tns1:Out>
+					<tns1:In isResponse="true">
+					</tns1:In>
+					<tns1:SrcMsgs transformation="CO_tPayTaxi.xsl">
+						<tns1:SrcMsg contractId="CO_TX" termId="orderTaxi"
+							isResponse="true" />
+					</tns1:SrcMsgs>
+					<tns1:ResultMsgs>
+						<tns1:ResultMsg contractId="CO_TX" termId="payTaxi"
+							isResponse="false" transformation="CO_tPayTaxi_CO_TX_payTaxi_Req.xsl" />
+					</tns1:ResultMsgs>
+				</tns1:Task>
+				<tns1:Task id="tBookHotel" isMsgDriven="false">
+					<tns1:Out deliveryType="push">
+						<tns1:Operation name="tBookHotel">
+							<Return>Return</Return>
+						</tns1:Operation>
+					</tns1:Out>
+					<tns1:In isResponse="true">
+					</tns1:In>
+					<tns1:ResultMsgs>
+						<tns1:ResultMsg contractId="CO_HT" termId="orderHotel"
+							isResponse="false" transformation="CO_tBookHotel_CO_HT_orderHotel_Req.xsl" />
+					</tns1:ResultMsgs>
+				</tns1:Task>
+				<tns1:Task id="tPayHotel" isMsgDriven="false">
+					<tns1:Out deliveryType="push">
+						<tns1:Operation name="tPayHotel">
+							<Return>Return</Return>
+						</tns1:Operation>
+					</tns1:Out>
+					<tns1:In isResponse="true">
+					</tns1:In>
+					<tns1:SrcMsgs transformation="CO_tPayHotel.xsl">
+						<tns1:SrcMsg contractId="CO_HT" termId="orderHotel"
+							isResponse="true" />
+					</tns1:SrcMsgs>
+					<tns1:ResultMsgs>
+						<tns1:ResultMsg contractId="CO_HT" termId="payHotel"
+							isResponse="false" transformation="CO_tPayHotel_CO_HT_payHotel_Req.xsl" />
+					</tns1:ResultMsgs>
+				</tns1:Task>
+				<tns1:Task id="tHandleException" isMsgDriven="false">
+					<tns1:Out deliveryType="push">
+						<tns1:Operation name="tHandleException">
+							<Return>Return</Return>
+						</tns1:Operation>
+					</tns1:Out>
+					<tns1:In isResponse="true">
+					</tns1:In>
+					<tns1:ResultMsgs>
+						<tns1:ResultMsg contractId="CO_MM" termId="complain"
+							isResponse="true" transformation="CO_tHandleException_CO_MM_complain_Res.xsl" />
+					</tns1:ResultMsgs>
+				</tns1:Task>
+			</Tasks>
+			<Description>This is a CaseOfficer role</Description>
+		</Role>
+		<Role id="GR" name="GR">
+			<Tasks>
+				<tns1:Task id="tAcceptRepairOrder" isMsgDriven="false">
+					<tns1:Out deliveryType="pull">
+						<tns1:Operation name="tAcceptRepairOrder">
+							<Return>Return</Return>
+						</tns1:Operation>
+					</tns1:Out>
+					<tns1:In isResponse="true">
+					</tns1:In>
+					<tns1:SrcMsgs transformation="GR_tAcceptRepairOrder.xsl">
+						<tns1:SrcMsg contractId="CO_GR" termId="orderRepair"
+							isResponse="false" />
+					</tns1:SrcMsgs>
+					<tns1:ResultMsgs>
+						<tns1:ResultMsg contractId="CO_TT" termId="sendGRLocation"
+							isResponse="false" transformation="GR_tAcceptRepairOrder_CO_TT_sendGRLocation_Req.xsl" />
+					</tns1:ResultMsgs>
+				</tns1:Task>
+				<tns1:Task id="tDoRepair" isMsgDriven="false">
+					<tns1:Out deliveryType="push">
+						<tns1:Operation name="tDoRepair">
+							<Return>Return</Return>
+						</tns1:Operation>
+					</tns1:Out>
+					<tns1:In isResponse="true">
+					</tns1:In>
+					<tns1:SrcMsgs transformation="GR_tDoRepair.xsl">
+						<tns1:SrcMsg contractId="GR_TT" termId="sendGRLocation"
+							isResponse="true" />
+					</tns1:SrcMsgs>
+					<tns1:ResultMsgs>
+						<tns1:ResultMsg contractId="CO_GR" termId="orderRepair"
+							isResponse="true" transformation="GR_tDoRepair_CO_GR_orderRepair_Res.xsl" />
+					</tns1:ResultMsgs>
+				</tns1:Task>
+				<tns1:Task id="tAcceptPayment" isMsgDriven="false">
+					<tns1:Out deliveryType="push">
+						<tns1:Operation name="tAcceptPayment">
+							<Return>Return</Return>
+						</tns1:Operation>
+					</tns1:Out>
+					<tns1:In isResponse="true">
+					</tns1:In>
+					<tns1:SrcMsgs transformation="GR_tAcceptPayment.xsl">
+						<tns1:SrcMsg contractId="CO_GR" termId="payRepair"
+							isResponse="false" />
+					</tns1:SrcMsgs>
+				</tns1:Task>
+			</Tasks>
+			<Description>This is a Garage role</Description>
+		</Role>
+		<Role id="TT" name="TT">
+			<Tasks>
+				<tns1:Task id="tTow" isMsgDriven="false">
+					<tns1:Out deliveryType="push">
+						<tns1:Operation name="tTow">
+							<Return>Return</Return>
+						</tns1:Operation>
+					</tns1:Out>
+					<tns1:In isResponse="true">
+					</tns1:In>
+					<tns1:SrcMsgs transformation="TT_tTow.xsl">
+						<tns1:SrcMsg contractId="CO_TT" termId="orderTow"
+							isResponse="false" />
+						<tns1:SrcMsg contractId="GR_TT" termId="sendGRLocation"
+							isResponse="false" />
+					</tns1:SrcMsgs>
+					<tns1:ResultMsgs>
+						<tns1:ResultMsg contractId="CO_TT" termId="orderTow"
+							isResponse="true" transformation="TT_tTow_CO_TT_orderTow_Res.xsl" />
+						<tns1:ResultMsg contractId="GR_TT" termId="sendGRLocation"
+							isResponse="true" transformation="TT_tTow_GR_TT_sendGRLocation_Res.xsl" />
+					</tns1:ResultMsgs>
+				</tns1:Task>
+				<tns1:Task id="tAcceptPayment" isMsgDriven="false">
+					<tns1:Out deliveryType="push">
+						<tns1:Operation name="tAcceptPayment">
+							<Return>Return</Return>
+						</tns1:Operation>
+					</tns1:Out>
+					<tns1:In isResponse="true">
+					</tns1:In>
+					<tns1:SrcMsgs transformation="TT_tAcceptPayment.xsl">
+						<tns1:SrcMsg contractId="CO_TT" termId="payTow"
+							isResponse="false" />
+					</tns1:SrcMsgs>
+				</tns1:Task>
+			</Tasks>
+			<Description>This is a TowTruck role</Description>
+		</Role>
+		<Role id="TX" name="TX">
+			<Tasks>
+				<tns1:Task id="tProvideTaxi" isMsgDriven="false">
+					<tns1:Out deliveryType="push">
+						<tns1:Operation name="tProvideTaxi">
+							<Return>Return</Return>
+						</tns1:Operation>
+					</tns1:Out>
+					<tns1:In isResponse="true">
+					</tns1:In>
+					<tns1:SrcMsgs transformation="TX_tProvideTaxi.xsl">
+						<tns1:SrcMsg contractId="CO_TX" termId="orderTaxi"
+							isResponse="false" />
+					</tns1:SrcMsgs>
+					<tns1:ResultMsgs>
+						<tns1:ResultMsg contractId="CO_TX" termId="orderTaxi"
+							isResponse="true" transformation="TX_tProvideTaxi_CO_TX_orderTaxi_Res.xsl" />
+					</tns1:ResultMsgs>
+				</tns1:Task>
+				<tns1:Task id="tAcceptPayment" isMsgDriven="false">
+					<tns1:Out deliveryType="push">
+						<tns1:Operation name="tAcceptPayment">
+							<Return>Return</Return>
+						</tns1:Operation>
+					</tns1:Out>
+					<tns1:In isResponse="true">
+					</tns1:In>
+					<tns1:SrcMsgs transformation="TX_tAcceptPayment.xsl">
+						<tns1:SrcMsg contractId="CO_TX" termId="payTaxi"
+							isResponse="false" />
+					</tns1:SrcMsgs>
+				</tns1:Task>
+			</Tasks>
+			<Description>This is a Taxi role</Description>
+		</Role>
+		<Role id="HT" name="HT">
+			<Tasks>
+				<tns1:Task id="tConfirmBooking" isMsgDriven="false">
+					<tns1:Out deliveryType="push">
+						<tns1:Operation name="tConfirmBooking">
+							<Return>Return</Return>
+						</tns1:Operation>
+					</tns1:Out>
+					<tns1:In isResponse="true">
+					</tns1:In>
+					<tns1:SrcMsgs transformation="HT_tConfirmBooking.xsl">
+						<tns1:SrcMsg contractId="CO_HT" termId="orderHotel"
+							isResponse="false" />
+					</tns1:SrcMsgs>
+					<tns1:ResultMsgs>
+						<tns1:ResultMsg contractId="CO_HT" termId="orderHotel"
+							isResponse="true" transformation="HT_tConfirmBooking_CO_HT_orderHotel_Res.xsl" />
+					</tns1:ResultMsgs>
+				</tns1:Task>
+				<tns1:Task id="tAcceptPayment" isMsgDriven="false">
+					<tns1:Out deliveryType="push">
+						<tns1:Operation name="tAcceptPayment">
+							<Return>Return</Return>
+						</tns1:Operation>
+					</tns1:Out>
+					<tns1:In isResponse="true">
+					</tns1:In>
+					<tns1:SrcMsgs transformation="HT_tAcceptPayment.xsl">
+						<tns1:SrcMsg contractId="CO_HT" termId="payHotel"
+							isResponse="false" />
+					</tns1:SrcMsgs>
+				</tns1:Task>
+			</Tasks>
+			<Description>This is a Hotel role</Description>
+		</Role>
+		<Role id="MM" name="MM">
+			<Tasks>
+			</Tasks>
+			<Description>This is a Member role</Description>
+		</Role>
+	</Roles>
+
+	<!--Player bindings will be listed below -->
+	<PlayerBindings>
+		<PlayerBinding id="copb_binding" >
+			<Endpoint>http://localhost:8080/axis2/services/S6COService</Endpoint>
+			<Roles>
+				<RoleID>CO</RoleID>
+			</Roles>
+			<Description>This is the binding for CO</Description>
+		</PlayerBinding>
+		<PlayerBinding id="ttpb_binding">
+			<Endpoint>http://localhost:8080/axis2/services/S6TTService</Endpoint>
+			<Roles>
+				<RoleID>TT</RoleID>
+			</Roles>
+			<Description>This is the binding for TT</Description>
+		</PlayerBinding>
+		<PlayerBinding id="grpb_binding">
+			<Endpoint>http://localhost:8080/axis2/services/S6GRService</Endpoint>
+			<Roles>
+				<RoleID>GR</RoleID>
+			</Roles>
+			<Description>This is the binding for GR</Description>
+		</PlayerBinding>
+		<PlayerBinding id="txpb_binding">
+			<Endpoint>http://localhost:8080/axis2/services/S6TXService</Endpoint>
+			<Roles>
+				<RoleID>TX</RoleID>
+			</Roles>
+			<Description>This is the binding for TX</Description>
+		</PlayerBinding>
+		<PlayerBinding id="htpb_binding">
+			<Endpoint>http://localhost:8080/axis2/services/S6HTService</Endpoint>
+			<Roles>
+				<RoleID>HT</RoleID>
+			</Roles>
+			<Description>This is the binding for HT</Description>
+		</PlayerBinding>
+	</PlayerBindings>
+	<OrganiserBinding>http://localhost:8080/axis2/services/rosas_organizer</OrganiserBinding>
+	<Description>This is the descriptor for the organisation RoSAS,
+		Generated by Serendip Modeling Tool</Description>
+	<Runtime>
+		<tns8:ProcessInstances>
+			<tns8:ProcessInstance>
+				<tns8:pid>pdGold001</tns8:pid>
+				<tns8:pDef>pdGold</tns8:pDef>
+				<tns8:Status>completed/running</tns8:Status>
+				<tns8:Viz epcId="pdGold001" name="pdGold001">
+					<documentation xsi:type="anyType"/>
+					<toolInfo xsi:type="anyType"/>
+					<configurationRequirement idRefs="">
+						<expression>expression</expression>
+					</configurationRequirement>
+					<event defRef="1" id="1">
+						<documentation xsi:type="anyType"/>
+						<toolInfo xsi:type="anyType"/>
+						<name>name</name>
+						<description>description</description>
+						<graphics>
+							<position height="0.0" width="0.0" x="0.0" y="0.0"/>
+							<fill color="" gradient-color="" gradient-rotation="vertical" image="http://tempuri.org"/>
+							<line color="" shape="line" style="solid" width="0.0"/>
+							<font color="" decoration="underline" family="" horizontalAlign="left" rotation="0.0" size="1" style="" verticalAlign="top" weight=""/>
+						</graphics>
+						<attribute typeRef="" value=""/>
+					</event>
+					<function defRef="1" id="1">
+						<documentation xsi:type="anyType"/>
+						<toolInfo xsi:type="anyType"/>
+						<name>name</name>
+						<description>description</description>
+						<graphics>
+							<position height="0.0" width="0.0" x="0.0" y="0.0"/>
+							<fill color="" gradient-color="" gradient-rotation="vertical" image="http://tempuri.org"/>
+							<line color="" shape="line" style="solid" width="0.0"/>
+							<font color="" decoration="underline" family="" horizontalAlign="left" rotation="0.0" size="1" style="" verticalAlign="top" weight=""/>
+						</graphics>
+						<toProcess linkToEpcId="1"/>
+						<configurableFunction>
+							<configuration value="on"/>
+						</configurableFunction>
+						<attribute typeRef="" value=""/>
+					</function>
+					<role defRef="1" id="1" optional="false">
+						<documentation xsi:type="anyType"/>
+						<toolInfo xsi:type="anyType"/>
+						<name>name</name>
+						<description>description</description>
+						<graphics>
+							<position height="0.0" width="0.0" x="0.0" y="0.0"/>
+							<fill color="" gradient-color="" gradient-rotation="vertical" image="http://tempuri.org"/>
+							<line color="" shape="line" style="solid" width="0.0"/>
+							<font color="" decoration="underline" family="" horizontalAlign="left" rotation="0.0" size="1" style="" verticalAlign="top" weight=""/>
+						</graphics>
+						<configurableRole>
+							<configuration optionality="mnd" specialization="1"/>
+						</configurableRole>
+						<attribute typeRef="" value=""/>
+					</role>
+					<object consumed="false" defRef="1" final="false" id="1" initial="false" optional="false" type="input">
+						<documentation xsi:type="anyType"/>
+						<toolInfo xsi:type="anyType"/>
+						<name>name</name>
+						<description>description</description>
+						<graphics>
+							<position height="0.0" width="0.0" x="0.0" y="0.0"/>
+							<fill color="" gradient-color="" gradient-rotation="vertical" image="http://tempuri.org"/>
+							<line color="" shape="line" style="solid" width="0.0"/>
+							<font color="" decoration="underline" family="" horizontalAlign="left" rotation="0.0" size="1" style="" verticalAlign="top" weight=""/>
+						</graphics>
+						<configurableObject>
+							<configuration optionality="mnd" specialization="1" usage="use"/>
+						</configurableObject>
+						<attribute typeRef="" value=""/>
+					</object>
+					<processInterface defRef="1" id="1">
+						<documentation xsi:type="anyType"/>
+						<toolInfo xsi:type="anyType"/>
+						<name>name</name>
+						<description>description</description>
+						<graphics>
+							<position height="0.0" width="0.0" x="0.0" y="0.0"/>
+							<fill color="" gradient-color="" gradient-rotation="vertical" image="http://tempuri.org"/>
+							<line color="" shape="line" style="solid" width="0.0"/>
+							<font color="" decoration="underline" family="" horizontalAlign="left" rotation="0.0" size="1" style="" verticalAlign="top" weight=""/>
+						</graphics>
+						<toProcess linkToEpcId="1"/>
+						<attribute typeRef="" value=""/>
+					</processInterface>
+					<and defRef="1" id="1">
+						<documentation xsi:type="anyType"/>
+						<toolInfo xsi:type="anyType"/>
+						<name>name</name>
+						<description>description</description>
+						<graphics>
+							<position height="0.0" width="0.0" x="0.0" y="0.0"/>
+							<fill color="" gradient-color="" gradient-rotation="vertical" image="http://tempuri.org"/>
+							<line color="" shape="line" style="solid" width="0.0"/>
+							<font color="" decoration="underline" family="" horizontalAlign="left" rotation="0.0" size="1" style="" verticalAlign="top" weight=""/>
+						</graphics>
+						<configurableConnector>
+							<configuration value="and"/>
+						</configurableConnector>
+						<attribute typeRef="" value=""/>
+					</and>
+					<or defRef="1" id="1">
+						<documentation xsi:type="anyType"/>
+						<toolInfo xsi:type="anyType"/>
+						<name>name</name>
+						<description>description</description>
+						<graphics>
+							<position height="0.0" width="0.0" x="0.0" y="0.0"/>
+							<fill color="" gradient-color="" gradient-rotation="vertical" image="http://tempuri.org"/>
+							<line color="" shape="line" style="solid" width="0.0"/>
+							<font color="" decoration="underline" family="" horizontalAlign="left" rotation="0.0" size="1" style="" verticalAlign="top" weight=""/>
+						</graphics>
+						<configurableConnector>
+							<configuration goto="1" value="or"/>
+						</configurableConnector>
+						<attribute typeRef="" value=""/>
+					</or>
+					<xor defRef="1" id="1">
+						<documentation xsi:type="anyType"/>
+						<toolInfo xsi:type="anyType"/>
+						<name>name</name>
+						<description>description</description>
+						<graphics>
+							<position height="0.0" width="0.0" x="0.0" y="0.0"/>
+							<fill color="" gradient-color="" gradient-rotation="vertical" image="http://tempuri.org"/>
+							<line color="" shape="line" style="solid" width="0.0"/>
+							<font color="" decoration="underline" family="" horizontalAlign="left" rotation="0.0" size="1" style="" verticalAlign="top" weight=""/>
+						</graphics>
+						<configurableConnector>
+							<configuration goto="1" value="xor"/>
+						</configurableConnector>
+						<attribute typeRef="" value=""/>
+					</xor>
+					<range defRef="1" id="1" lowerBound="k" optional="false" type="role" upperBound="k">
+						<documentation xsi:type="anyType"/>
+						<toolInfo xsi:type="anyType"/>
+						<name>name</name>
+						<description>description</description>
+						<graphics>
+							<position height="0.0" width="0.0" x="0.0" y="0.0"/>
+							<fill color="" gradient-color="" gradient-rotation="vertical" image="http://tempuri.org"/>
+							<line color="" shape="line" style="solid" width="0.0"/>
+							<font color="" decoration="underline" family="" horizontalAlign="left" rotation="0.0" size="1" style="" verticalAlign="top" weight=""/>
+						</graphics>
+						<configurableConnector>
+							<configuration decrement="k" goto="1" increment="k" optionality="mnd" range="node"/>
+						</configurableConnector>
+						<attribute typeRef="" value=""/>
+					</range>
+					<arc id="1">
+						<documentation xsi:type="anyType"/>
+						<toolInfo xsi:type="anyType"/>
+						<name>name</name>
+						<description>description</description>
+						<flow source="1" target="1"/>
+						<graphics>
+							<position x="0.0" y="0.0"/>
+							<line color="" shape="line" style="solid" width="0.0"/>
+							<font color="" decoration="underline" family="" horizontalAlign="left" rotation="0.0" size="1" style="" verticalAlign="top" weight=""/>
+						</graphics>
+						<attribute typeRef="" value=""/>
+					</arc>
+				</tns8:Viz>
+			</tns8:ProcessInstance>
+		</tns8:ProcessInstances>
+		<tns8:SystemProperties>
+			<tns8:Property Key="" Value=""/>
+		</tns8:SystemProperties>
+	</Runtime>
+</tns:SMC>

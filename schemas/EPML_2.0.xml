@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<p:epml xmlns:p="http://www.epml.de" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.epml.de EPML_2.0.xsd ">
+  <documentation xsi:type="anyType"/>
+  <toolInfo xsi:type="anyType"/>
+  <graphicsDefault>
+    <fill color="" gradient-color="" gradient-rotation="vertical" image="http://tempuri.org"/>
+    <line color="" shape="line" style="solid" width="0.0"/>
+    <font color="" decoration="underline" family="" horizontalAlign="left" rotation="0.0" size="1" style="" verticalAlign="top" weight=""/>
+  </graphicsDefault>
+  <coordinates xOrigin="leftToRight" yOrigin="topToBottom">
+    <documentation xsi:type="anyType"/>
+    <toolInfo xsi:type="anyType"/>
+  </coordinates>
+  <definitions>
+    <definition defId="1" type="event">
+      <documentation xsi:type="anyType"/>
+      <toolInfo xsi:type="anyType"/>
+      <name>name</name>
+      <description>description</description>
+    </definition>
+  </definitions>
+  <attributeTypes>
+    <attributeType typeId="">
+      <documentation xsi:type="anyType"/>
+      <toolInfo xsi:type="anyType"/>
+      <description>description</description>
+    </attributeType>
+  </attributeTypes>
+  <directory name="">
+    <documentation xsi:type="anyType"/>
+    <toolInfo xsi:type="anyType"/>
+    <epc epcId="1" name="">
+      <documentation xsi:type="anyType"/>
+      <toolInfo xsi:type="anyType"/>
+      <configurationRequirement idRefs="">
+        <expression>expression</expression>
+      </configurationRequirement>
+      <event defRef="1" id="1">
+        <documentation xsi:type="anyType"/>
+        <toolInfo xsi:type="anyType"/>
+        <name>name</name>
+        <description>description</description>
+        <graphics>
+          <position height="0.0" width="0.0" x="0.0" y="0.0"/>
+          <fill color="" gradient-color="" gradient-rotation="vertical" image="http://tempuri.org"/>
+          <line color="" shape="line" style="solid" width="0.0"/>
+          <font color="" decoration="underline" family="" horizontalAlign="left" rotation="0.0" size="1" style="" verticalAlign="top" weight=""/>
+        </graphics>
+        <attribute typeRef="" value=""/>
+      </event>
+      <function defRef="1" id="1">
+        <documentation xsi:type="anyType"/>
+        <toolInfo xsi:type="anyType"/>
+        <name>name</name>
+        <description>description</description>
+        <graphics>
+          <position height="0.0" width="0.0" x="0.0" y="0.0"/>
+          <fill color="" gradient-color="" gradient-rotation="vertical" image="http://tempuri.org"/>
+          <line color="" shape="line" style="solid" width="0.0"/>
+          <font color="" decoration="underline" family="" horizontalAlign="left" rotation="0.0" size="1" style="" verticalAlign="top" weight=""/>
+        </graphics>
+        <toProcess linkToEpcId="1"/>
+        <configurableFunction>
+          <configuration value="on"/>
+        </configurableFunction>
+        <attribute typeRef="" value=""/>
+      </function>
+      <role defRef="1" id="1" optional="false">
+        <documentation xsi:type="anyType"/>
+        <toolInfo xsi:type="anyType"/>
+        <name>name</name>
+        <description>description</description>
+        <graphics>
+          <position height="0.0" width="0.0" x="0.0" y="0.0"/>
+          <fill color="" gradient-color="" gradient-rotation="vertical" image="http://tempuri.org"/>
+          <line color="" shape="line" style="solid" width="0.0"/>
+          <font color="" decoration="underline" family="" horizontalAlign="left" rotation="0.0" size="1" style="" verticalAlign="top" weight=""/>
+        </graphics>
+        <configurableRole>
+          <configuration optionality="mnd" specialization="1"/>
+        </configurableRole>
+        <attribute typeRef="" value=""/>
+      </role>
+      <object consumed="false" defRef="1" final="false" id="1" initial="false" optional="false" type="input">
+        <documentation xsi:type="anyType"/>
+        <toolInfo xsi:type="anyType"/>
+        <name>name</name>
+        <description>description</description>
+        <graphics>
+          <position height="0.0" width="0.0" x="0.0" y="0.0"/>
+          <fill color="" gradient-color="" gradient-rotation="vertical" image="http://tempuri.org"/>
+          <line color="" shape="line" style="solid" width="0.0"/>
+          <font color="" decoration="underline" family="" horizontalAlign="left" rotation="0.0" size="1" style="" verticalAlign="top" weight=""/>
+        </graphics>
+        <configurableObject>
+          <configuration optionality="mnd" specialization="1" usage="use"/>
+        </configurableObject>
+        <attribute typeRef="" value=""/>
+      </object>
+      <processInterface defRef="1" id="1">
+        <documentation xsi:type="anyType"/>
+        <toolInfo xsi:type="anyType"/>
+        <name>name</name>
+        <description>description</description>
+        <graphics>
+          <position height="0.0" width="0.0" x="0.0" y="0.0"/>
+          <fill color="" gradient-color="" gradient-rotation="vertical" image="http://tempuri.org"/>
+          <line color="" shape="line" style="solid" width="0.0"/>
+          <font color="" decoration="underline" family="" horizontalAlign="left" rotation="0.0" size="1" style="" verticalAlign="top" weight=""/>
+        </graphics>
+        <toProcess linkToEpcId="1"/>
+        <attribute typeRef="" value=""/>
+      </processInterface>
+      <and defRef="1" id="1">
+        <documentation xsi:type="anyType"/>
+        <toolInfo xsi:type="anyType"/>
+        <name>name</name>
+        <description>description</description>
+        <graphics>
+          <position height="0.0" width="0.0" x="0.0" y="0.0"/>
+          <fill color="" gradient-color="" gradient-rotation="vertical" image="http://tempuri.org"/>
+          <line color="" shape="line" style="solid" width="0.0"/>
+          <font color="" decoration="underline" family="" horizontalAlign="left" rotation="0.0" size="1" style="" verticalAlign="top" weight=""/>
+        </graphics>
+        <configurableConnector>
+          <configuration value="and"/>
+        </configurableConnector>
+        <attribute typeRef="" value=""/>
+      </and>
+      <or defRef="1" id="1">
+        <documentation xsi:type="anyType"/>
+        <toolInfo xsi:type="anyType"/>
+        <name>name</name>
+        <description>description</description>
+        <graphics>
+          <position height="0.0" width="0.0" x="0.0" y="0.0"/>
+          <fill color="" gradient-color="" gradient-rotation="vertical" image="http://tempuri.org"/>
+          <line color="" shape="line" style="solid" width="0.0"/>
+          <font color="" decoration="underline" family="" horizontalAlign="left" rotation="0.0" size="1" style="" verticalAlign="top" weight=""/>
+        </graphics>
+        <configurableConnector>
+          <configuration goto="1" value="or"/>
+        </configurableConnector>
+        <attribute typeRef="" value=""/>
+      </or>
+      <xor defRef="1" id="1">
+        <documentation xsi:type="anyType"/>
+        <toolInfo xsi:type="anyType"/>
+        <name>name</name>
+        <description>description</description>
+        <graphics>
+          <position height="0.0" width="0.0" x="0.0" y="0.0"/>
+          <fill color="" gradient-color="" gradient-rotation="vertical" image="http://tempuri.org"/>
+          <line color="" shape="line" style="solid" width="0.0"/>
+          <font color="" decoration="underline" family="" horizontalAlign="left" rotation="0.0" size="1" style="" verticalAlign="top" weight=""/>
+        </graphics>
+        <configurableConnector>
+          <configuration goto="1" value="xor"/>
+        </configurableConnector>
+        <attribute typeRef="" value=""/>
+      </xor>
+      <range defRef="1" id="1" lowerBound="k" optional="false" type="role" upperBound="k">
+        <documentation xsi:type="anyType"/>
+        <toolInfo xsi:type="anyType"/>
+        <name>name</name>
+        <description>description</description>
+        <graphics>
+          <position height="0.0" width="0.0" x="0.0" y="0.0"/>
+          <fill color="" gradient-color="" gradient-rotation="vertical" image="http://tempuri.org"/>
+          <line color="" shape="line" style="solid" width="0.0"/>
+          <font color="" decoration="underline" family="" horizontalAlign="left" rotation="0.0" size="1" style="" verticalAlign="top" weight=""/>
+        </graphics>
+        <configurableConnector>
+          <configuration decrement="k" goto="1" increment="k" optionality="mnd" range="node"/>
+        </configurableConnector>
+        <attribute typeRef="" value=""/>
+      </range>
+      <arc id="1">
+        <documentation xsi:type="anyType"/>
+        <toolInfo xsi:type="anyType"/>
+        <name>name</name>
+        <description>description</description>
+        <flow source="1" target="1"/>
+        <graphics>
+          <position x="0.0" y="0.0"/>
+          <line color="" shape="line" style="solid" width="0.0"/>
+          <font color="" decoration="underline" family="" horizontalAlign="left" rotation="0.0" size="1" style="" verticalAlign="top" weight=""/>
+        </graphics>
+        <attribute typeRef="" value=""/>
+      </arc>
+    </epc>
+  </directory>
+</p:epml>

@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://www.example.org/RuntimeSchema"
+	xmlns:tns="http://www.example.org/RuntimeSchema"
+	elementFormDefault="qualified"
+	xmlns:pref="http://www.swin.edu.au/ict/road/smc"
+	xmlns:pref1="http://www.ict.swin.edu.au/serendip/types"
+	xmlns:pref2="http://www.swin.edu.au/ict/road/role"
+	xmlns:pref3="http://www.swin.edu.au/ict/road/contract"
+	xmlns:pref4="http://www.swin.edu.au/ict/road/regulator/Facts"
+	xmlns:pref5="http://www.swin.edu.au/ict/road/player"
+	xmlns:pref6="http://www.swin.edu.au/ict/road/fact"
+	xmlns:pref7="http://www.swin.edu.au/ict/road/term"
+	xmlns:pref8="http://www.swin.edu.au/ict/road/monitor" xmlns:pref9="http://www.epml.de">
+	<import schemaLocation="smc.xsd"
+		namespace="http://www.swin.edu.au/ict/road/smc">
+	</import>
+
+
+	<import schemaLocation="serendip.xsd"
+		namespace="http://www.ict.swin.edu.au/serendip/types">
+	</import>
+	<import schemaLocation="role.xsd"
+		namespace="http://www.swin.edu.au/ict/road/role">
+	</import>
+	<import schemaLocation="contract.xsd"
+		namespace="http://www.swin.edu.au/ict/road/contract">
+	</import>
+	<import schemaLocation="JFacts.xsd"
+		namespace="http://www.swin.edu.au/ict/road/regulator/Facts">
+	</import>
+	<import schemaLocation="player.xsd"
+		namespace="http://www.swin.edu.au/ict/road/player">
+	</import>
+	<import schemaLocation="fact.xsd"
+		namespace="http://www.swin.edu.au/ict/road/fact">
+	</import>
+	<import schemaLocation="term.xsd"
+		namespace="http://www.swin.edu.au/ict/road/term">
+	</import>
+	<import schemaLocation="monitor.xsd"
+		namespace="http://www.swin.edu.au/ict/road/monitor">
+	</import>
+	<import schemaLocation="EPML_2.0.xsd" namespace="http://www.epml.de"></import>
+	<element name="RunTime" type="tns:RunTime"></element>
+
+	<complexType name="RunTime">
+		<sequence>
+			<element name="ProcessInstances"
+				type="tns:ProcessInstancesType" maxOccurs="1" minOccurs="0">
+			</element>
+			<element name="SystemProperties"
+				type="tns:SystemPropertiesType" maxOccurs="1" minOccurs="0">
+			</element>
+		</sequence>
+	</complexType>
+
+	<complexType name="ProcessInstancesType">
+		<sequence>
+			<element name="ProcessInstance"
+				type="tns:ProcessInstanceType" maxOccurs="unbounded"
+				minOccurs="0">
+			</element>
+		</sequence>
+	</complexType>
+
+	<complexType name="ProcessInstanceType">
+		<sequence>
+			<element name="pid" type="string" maxOccurs="1"
+				minOccurs="1">
+			</element>
+			<element name="pDef" type="string" maxOccurs="1"
+				minOccurs="0">
+			</element>
+			<element name="Status" type="string" maxOccurs="1"
+				minOccurs="1">
+			</element>
+			<element name="Viz" type="pref9:typeEPC" maxOccurs="1"
+				minOccurs="0">
+			</element>
+		</sequence>
+		<attribute name="isOrigDef" type="boolean"></attribute>
+	</complexType>
+
+	<complexType name="SystemPropertiesType">
+		<sequence>
+			<element name="Property" type="tns:PropertyType"></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="PropertyType">
+		<attribute name="Key" type="string"></attribute>
+		<attribute name="Value" type="string"></attribute>
+	</complexType>
+
+	<complexType name="RTTasksType">
+		<sequence>
+			<element name="RTTask" type="tns:RTTaskType"
+				maxOccurs="unbounded" minOccurs="0">
+			</element>
+		</sequence>
+	</complexType>
+
+	<complexType name="RTTaskType">
+		<sequence>
+			<element name="TaskType" type="pref1:TaskType" maxOccurs="1"
+				minOccurs="1">
+			</element>
+		</sequence>
+		<attribute name="status" type="string"></attribute>
+	</complexType>
+
+
+
+
+
+	<simpleType name="NewType">
+		<restriction base="string"></restriction>
+	</simpleType>
+</schema>

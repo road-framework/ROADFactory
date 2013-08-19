@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema targetNamespace="http://www.ict.swin.edu.au/serendip/types"
+	elementFormDefault="qualified" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:tns="http://www.ict.swin.edu.au/serendip/types"
+	xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:Q1="http://www.swin.edu.au/ict/road/term">
+
+	  
+    <xsd:import schemaLocation="term.xsd" namespace="http://www.swin.edu.au/ict/road/term"></xsd:import>
+    <xsd:complexType name="BehaviorTermType">
+		<xsd:sequence>
+            <xsd:element name="TaskRefs" type="tns:TaskRefsType" maxOccurs="1" minOccurs="1"></xsd:element>
+            <xsd:element name="Constraints" type="tns:ConstraintsType"
+				maxOccurs="1" minOccurs="0">
+			</xsd:element>
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:string" use="required"></xsd:attribute>
+		<xsd:attribute name="extension" type="xsd:string" use="optional"></xsd:attribute>
+		<xsd:attribute name="extends" type="xsd:string" use="optional"></xsd:attribute>
+		<xsd:attribute name="isAbstract" type="xsd:boolean" use="optional" default="false"></xsd:attribute>
+	</xsd:complexType>
+
+    <xsd:complexType name="EventType">
+    	<xsd:attribute name="id" type="xsd:string" use="required"></xsd:attribute>
+    	<xsd:attribute name="isInit" type="xsd:boolean"></xsd:attribute>
+    	<xsd:attribute name="isError" type="xsd:boolean"></xsd:attribute>
+    	<xsd:attribute name="descr" type="xsd:string"></xsd:attribute>
+    </xsd:complexType>
+
+    <xsd:simpleType name="EventPatternType">
+		<xsd:restriction base="xsd:string"></xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:complexType name="ProcessDefinitionType">
+		<xsd:sequence>
+			<xsd:element name="CoS" type="xsd:string" maxOccurs="1"
+				minOccurs="1">
+			</xsd:element>
+			<xsd:element name="CoT" type="xsd:string" maxOccurs="1"
+				minOccurs="1">
+			</xsd:element>
+            <xsd:element name="BehaviorTermRefs" type="tns:BehaviorTermRef" maxOccurs="1" minOccurs="1">
+			</xsd:element>
+            <xsd:element name="Constraints" type="tns:ConstraintsType"
+				maxOccurs="1" minOccurs="0">
+			</xsd:element>
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:string" use="required"></xsd:attribute>
+		<xsd:attribute name="descr" type="xsd:string" default="Description"></xsd:attribute>
+	</xsd:complexType>
+
+	<xsd:complexType name="TaskType">
+		<xsd:sequence>
+			<xsd:element name="Out" type="tns:OutMsgType" maxOccurs="1"
+				minOccurs="0">
+			</xsd:element>
+			<xsd:element name="In" type="tns:InMsgType" maxOccurs="1"
+				minOccurs="0">
+			</xsd:element>
+			<xsd:element name="SrcMsgs" type="tns:SrcMsgsType"
+				maxOccurs="1" minOccurs="0">
+			</xsd:element>
+			<xsd:element name="ResultMsgs" type="tns:ResultMsgsType"
+				maxOccurs="1" minOccurs="0">
+			</xsd:element>
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:string"></xsd:attribute>
+		<xsd:attribute name="msgAnalyser" type="xsd:string"></xsd:attribute>
+		<xsd:attribute name="isMsgDriven" type="xsd:boolean" use="required"></xsd:attribute>
+	</xsd:complexType>
+
+
+
+	<xsd:complexType name="BehaviorTermRef">
+		<xsd:sequence>
+			<xsd:element name="BehavirTermId" type="xsd:string" maxOccurs="unbounded" minOccurs="0"></xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="EventsType">
+		<xsd:sequence>
+			<xsd:element name="Event" type="tns:EventType"
+				maxOccurs="unbounded" minOccurs="0">
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+
+	<xsd:simpleType name="OutputEventType">
+		<xsd:restriction base="xsd:string"></xsd:restriction>
+	</xsd:simpleType>
+
+
+	<xsd:complexType name="ConstraintsType">
+		<xsd:sequence>
+			<xsd:element name="Constraint" type="tns:ConstraintType"
+				maxOccurs="unbounded" minOccurs="0">
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+
+	<xsd:complexType name="MessageType">
+		<xsd:attribute name="id" type="xsd:string"></xsd:attribute>
+		<xsd:attribute name="interactionTerm" type="xsd:string"></xsd:attribute>
+		<xsd:attribute name="type" type="xsd:string"></xsd:attribute>
+		<xsd:attribute name="contract" type="xsd:string"></xsd:attribute>
+	</xsd:complexType>
+
+	<xsd:complexType name="MessagesType">
+		<xsd:sequence>
+			<xsd:element name="Message" type="tns:MessageType"
+				maxOccurs="unbounded" minOccurs="0">
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="PerformancePropertyType">
+    	<xsd:sequence>
+    		<xsd:any></xsd:any>
+    	</xsd:sequence></xsd:complexType>
+
+
+    <xsd:complexType name="ApplicationPropertyType">
+    	<xsd:attribute name="key" type="xsd:string"></xsd:attribute>
+    	<xsd:attribute name="value" type="xsd:string"></xsd:attribute>
+    </xsd:complexType>
+
+
+
+    <xsd:complexType name="ConstraintType">
+    	<xsd:attribute name="Id" type="xsd:string"></xsd:attribute>
+    	<xsd:attribute name="Expression" type="xsd:string"></xsd:attribute>
+    	<xsd:attribute name="enabled" type="xsd:boolean"></xsd:attribute>
+    	<xsd:attribute name="language" type="xsd:string"></xsd:attribute>
+    	<xsd:attribute name="soft" type="xsd:boolean"></xsd:attribute>
+    </xsd:complexType>
+
+    <xsd:complexType name="BehaviorTermsType">
+    	<xsd:sequence>
+    		<xsd:element name="BehaviorTerm"
+    			type="tns:BehaviorTermType" maxOccurs="unbounded" minOccurs="1">
+    		</xsd:element>
+    	</xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="ProcessDefinitionsType">
+    	<xsd:sequence>
+    		<xsd:element name="ProcessDefinition" type="tns:ProcessDefinitionType" maxOccurs="unbounded" minOccurs="1"></xsd:element>
+    	</xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="TasksType">
+    	<xsd:sequence>
+    		<xsd:element name="Task" type="tns:TaskType" maxOccurs="unbounded" minOccurs="0"></xsd:element>
+    	</xsd:sequence>
+    </xsd:complexType>
+
+
+    <xsd:complexType name="TaskRefsType">
+    	<xsd:sequence>
+    		<xsd:element name="TaskRef" type="tns:TaskRefType" maxOccurs="unbounded" minOccurs="0"></xsd:element>
+    	</xsd:sequence>
+    </xsd:complexType>
+    
+    <xsd:complexType name="TaskRefType">
+    	<xsd:attribute name="Id" type="xsd:string" use="required"></xsd:attribute>
+    	<xsd:attribute name="preEP" type="xsd:string"></xsd:attribute>
+    	<xsd:attribute name="postEP" type="xsd:string"></xsd:attribute>
+    	<xsd:attribute name="performanceVal" type="xsd:string"></xsd:attribute>
+    	<xsd:attribute name="type" type="xsd:string"></xsd:attribute>
+    </xsd:complexType>
+
+
+    <xsd:complexType name="OutMsgType">
+    	<xsd:sequence>
+    		<xsd:element name="Operation" type="Q1:OperationType"
+    			maxOccurs="1" minOccurs="1">
+    		</xsd:element>
+    	</xsd:sequence>
+    	<xsd:attribute name="deliveryType" type="xsd:string"></xsd:attribute>
+    	<xsd:attribute name="isResponse" type="xsd:boolean" use="optional" default="false"></xsd:attribute>
+    </xsd:complexType>
+
+    <xsd:complexType name="InMsgType">
+    	<xsd:sequence>
+    		<xsd:element name="Operation" type="Q1:OperationType"
+    			maxOccurs="1" minOccurs="1">
+    		</xsd:element>
+    	</xsd:sequence>
+    	<xsd:attribute name="isResponse" type="xsd:boolean" use="optional" default="false"></xsd:attribute>
+    </xsd:complexType>
+
+    <xsd:complexType name="ResultMsgsType">
+    	<xsd:sequence>
+    		<xsd:element name="ResultMsg" type="tns:ResultMsgType" maxOccurs="unbounded" minOccurs="1"></xsd:element>
+    	</xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="ResultMsgType">
+    	<xsd:attribute name="contractId" type="xsd:string"></xsd:attribute>
+    	<xsd:attribute name="termId" type="xsd:string"></xsd:attribute>
+    	<xsd:attribute name="isResponse" type="xsd:boolean" use="optional" default="false"></xsd:attribute>
+    	<xsd:attribute name="transformation" type="xsd:string"></xsd:attribute>
+    </xsd:complexType>
+
+    <xsd:complexType name="MessageAnalyzerType"> 
+        <xsd:attribute name="id" type="xsd:string" use="required"></xsd:attribute>
+        <xsd:attribute name="class" type="xsd:string"></xsd:attribute>
+	</xsd:complexType>
+	
+    <xsd:complexType name="Parameter">
+    	<xsd:sequence>
+    		<xsd:any></xsd:any>
+    	</xsd:sequence></xsd:complexType>
+
+    <xsd:complexType name="MessageAnalyzersType">
+    	<xsd:sequence>
+    		<xsd:element name="MessageAnalyzer"
+    			type="tns:MessageAnalyzerType" maxOccurs="unbounded" minOccurs="0">
+    		</xsd:element>
+    	</xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="SrcMsgsType">
+    	<xsd:sequence>
+    		<xsd:element name="SrcMsg" type="tns:SrcMsgType"
+    			maxOccurs="unbounded" minOccurs="1">
+    		</xsd:element>
+    	</xsd:sequence>
+    	<xsd:attribute name="transformation" type="xsd:string"></xsd:attribute>
+    </xsd:complexType>
+
+    <xsd:complexType name="SrcMsgType">
+    	<xsd:attribute name="contractId" type="xsd:string"></xsd:attribute>
+    	<xsd:attribute name="termId" type="xsd:string"></xsd:attribute>
+    	<xsd:attribute name="isResponse" type="xsd:boolean" use="optional" default="false"></xsd:attribute>
+    </xsd:complexType>
+</xsd:schema>

@@ -1,0 +1,66 @@
+import au.edu.swin.ict.road.composite.rules.events.contract.MessageRecievedEvent;
+import au.edu.swin.ict.road.composite.contract.Contract;
+import au.edu.swin.ict.road.composite.message.IMessageExaminer;
+import au.edu.swin.ict.road.composite.message.SOAPExaminer;
+
+/****** Events / facts ******/  
+declare MessageRecievedEvent 
+	@role(event)
+end
+
+/** Execution Rules **/
+
+rule "SOAP message with orderFood signature"
+salience 100
+no-loop
+    when
+       	$check : SOAPExaminer()	
+		$event : MessageRecievedEvent(operationName == "orderFood")			
+    then    
+    	$check.addQueryName("customer-name");
+    	$check.addQueryName("payment");
+    	$check.addQueryName("meat");
+    	$check.addQueryName("wine");
+    	$check.evaluateMessage();
+    	update($check);
+end
+
+rule "Wine Preference"
+	when
+		$check : IMessageExaminer(addedQueryNames contains("wine") && queryResult contains("wine"))
+	then
+		System.out.println("Wine is one of the preference but it's not on the soap message");
+end
+
+rule "Customer Name Preference"
+	when
+		$check : IMessageExaminer(queryResult contains ("customer-name")) 
+	then
+		System.out.println("Customer Name is one of the preference"); 
+		System.out.println("Customomer is " + $check.getQueryValues().get("customer-name"));		
+end
+
+rule "Payment Preference"
+	when
+		$check : IMessageExaminer(queryResult contains ("payment")) 
+	then
+		System.out.println("Payment is one of the preference"); 
+		System.out.println("The type of payment is " + $check.getQueryValues().get("payment"));		
+end
+
+rule "Meat Preference"
+	when
+		$check : IMessageExaminer(queryResult contains ("meat"))  
+	then
+		System.out.println("Meat is one of the preference"); 
+		System.out.println("The type of meat is " + $check.getQueryValues().get("meat"));		
+end
+
+rule "SOAP Message Routing"
+	when
+		$check : IMessageExaminer(queryValues["customer-name"] == "Bill Smith" && 
+			queryValues["payment"] == "cash" && queryValues["meat"] == "Beef Sausages")
+	then
+		System.out.println("Message has been routed to destination role with specific preference");
+		$check.setDestinationRole("cf");
+end

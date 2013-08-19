@@ -1,0 +1,25 @@
+Adding new event E1p0
+INFO - EventCloud.addEvent(26) | Added event  E1 for pid=p0
+INFO - Task.eventPatternMatched(32) | Role CO can do Task CO-CL.B1.T1
+INFO - EventCloud.addEvent(26) | Added event  E2 for pid=p0
+INFO - EventCloud.addEvent(26) | Added event  E3 for pid=p0
+INFO - Task.eventPatternMatched(32) | Role CO can do Task CO-GR.B1.T1
+INFO - EventCloud.addEvent(26) | Added event  E4 for pid=p0
+INFO - Task.eventPatternMatched(32) | Role TC can do Task CO-TC.B1.T1
+INFO - EventCloud.addEvent(26) | Added event  E6 for pid=p0
+INFO - Task.eventPatternMatched(32) | Role CO can do Task CO-TC.B1.T2
+INFO - EventCloud.addEvent(26) | Added event  E12 for pid=p0
+INFO - Task.eventPatternMatched(32) | Role CO can do Task GR-TC.B1.T1
+INFO - EventCloud.addEvent(26) | Added event  E10 for pid=p0
+INFO - Task.eventPatternMatched(32) | Role GR can do Task GR-TC.B1.T2
+INFO - EventCloud.addEvent(26) | Added event  E8 for pid=p0
+INFO - Task.eventPatternMatched(32) | Role CO can do Task CO-TC.B1.T2
+INFO - EventCloud.addEvent(26) | Added event  E12 for pid=p0
+INFO - EventCloud.addEvent(26) | Added event  E9 for pid=p0
+INFO - Task.eventPatternMatched(32) | Role GR can do Task CO-GR.B1.T2
+INFO - EventCloud.addEvent(26) | Added event  E5 for pid=p0
+INFO - Task.eventPatternMatched(32) | Role CL can do Task CO-CL.B1.T2
+INFO - EventCloud.addEvent(26) | Added event  E7 for pid=p0
+INFO - Task.eventPatternMatched(32) | Role CO can do Task CO-GR.B1.T3
+INFO - EventCloud.addEvent(26) | Added event  E11 for pid=p0
+INFO - ProcessInstance.eventPatternMatched(109) | Successfully terminated the process instance p0

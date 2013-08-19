@@ -1,0 +1,751 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?jaxfront version=2.66;time=2011-06-27 17:36:31.846;xui=road1.xui;xsd=smc.xsd?>
+<tns:SMC xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:tns6="http://www.swin.edu.au/ict/road/player" xmlns:tns5="http://www.swin.edu.au/ict/road/monitor"
+	xmlns:tns4="http://www.swin.edu.au/ict/road/term" xsi:schemaLocation="smc smc.xsd"
+	xmlns:tns3="http://www.swin.edu.au/ict/road/contract" xmlns:tns2="http://www.swin.edu.au/ict/road/role"
+	xmlns:tns1="http://www.ict.swin.edu.au/serendip/types" xmlns:tns="http://www.swin.edu.au/ict/road/smc"
+	name="usdl" dataDir="sample/Scenario2/data" routingRuleFile="routing.drl"
+	compositeRuleFile="composite.drl">
+	<Facts>
+		<Fact name="UserInvocationStat" source="External">
+			<Identifier>UserId</Identifier>
+			<Attributes>
+				<Attribute>Count</Attribute>
+			</Attributes>
+		</Fact>
+		<Fact name="ServiceInvocationStat" source="External">
+			<Identifier>ServiceId</Identifier>
+			<Attributes>
+				<Attribute>Count</Attribute>
+			</Attributes>
+		</Fact>
+		<Fact name="RegisteredUsers" source="External">
+			<Identifier>UserId</Identifier>
+			<Attributes>
+				<Attribute>Block</Attribute>
+			</Attributes>
+		</Fact>
+	</Facts>
+	<Roles>
+		<Role id="RUP" name="RUP">
+			<LinkedFacts>
+				<Fact monitor="true" provide="true" name="RegisteredUsers">
+					<AcquisitionRegime SyncInterval="0" mode="Active" />
+					<ProvisionRegime SyncInterval="0" mode="Active" />
+					<OnChange>true</OnChange>
+				</Fact>
+			</LinkedFacts>
+			<Description>Description</Description>
+		</Role>
+		<Role id="MON" name="MON">
+			<LinkedFacts>
+				<Fact monitor="true" provide="false" name="UserInvocationStat">
+					<AcquisitionRegime SyncInterval="0" mode="Active" />
+					<ProvisionRegime SyncInterval="0" mode="Active" />
+					<OnChange>true</OnChange>
+				</Fact>
+				<Fact monitor="true" provide="false" name="ServiceInvocationStat">
+					<AcquisitionRegime SyncInterval="0" mode="Active" />
+					<ProvisionRegime SyncInterval="0" mode="Active" />
+					<OnChange>true</OnChange>
+				</Fact>
+			</LinkedFacts>
+			<Description>Description</Description>
+		</Role>
+		<Role id="SC1" name="SC1">
+			<!-- <LinkedFacts>
+				<Fact monitor="true" provide="false" name="UserInvocationStat">
+					<AcquisitionRegime SyncInterval="0" mode="Active" />
+					<ProvisionRegime SyncInterval="0" mode="Active" />
+					<OnChange>true</OnChange>
+				</Fact>
+			</LinkedFacts> -->
+			<Description>Description</Description>
+		</Role>
+		<Role id="SC2" name="SC2">
+			<LinkedFacts>
+				<Fact monitor="true" provide="false" name="UserInvocationStat">
+					<AcquisitionRegime SyncInterval="0" mode="Active" />
+					<ProvisionRegime SyncInterval="0" mode="Active" />
+					<OnChange>true</OnChange>
+				</Fact>ServiceInvocationStat
+			</LinkedFacts>
+			<Description>Description</Description>
+		</Role>
+		<Role id="SP1" name="SP1">
+			<LinkedFacts>
+				<Fact monitor="true" provide="false" name="UserInvocationStat">
+					<AcquisitionRegime SyncInterval="0" mode="Active" />
+					<ProvisionRegime SyncInterval="0" mode="Active" />
+					<OnChange>true</OnChange>
+				</Fact>
+				<Fact monitor="true" provide="false" name="ServiceInvocationStat">
+					<AcquisitionRegime SyncInterval="0" mode="Active" />
+					<ProvisionRegime SyncInterval="0" mode="Active" />
+					<OnChange>true</OnChange>
+				</Fact>
+			</LinkedFacts>
+			<Description>Description</Description>
+		</Role>
+		<Role id="REG" name="REG">
+			<Tasks>
+				<tns1:Task id="GetServiceCapabilityAnon" isMsgDriven="true">
+					<tns1:Out deliveryType="push">
+						<tns1:Operation name="GetService">
+							<Parameters>
+								<Parameter>
+									<Type>String</Type>
+									<Name>Service_ID</Name>
+								</Parameter>
+							</Parameters>
+							<Return>GetServiceReturn</Return>
+						</tns1:Operation>
+					</tns1:Out>
+					<tns1:In isResponse="true">
+						<tns1:Operation name="GetService">
+							<Parameters>
+								<Parameter>
+									<Type>String</Type>
+									<Name>Service_ID</Name>
+								</Parameter>
+							</Parameters>
+							<Return>GetServiceReturn</Return>
+						</tns1:Operation>
+					</tns1:In>
+					<tns1:SrcMsgs transformation="GetServiceCapabilityAnon.xsl">
+						<tns1:SrcMsg contractId="SC1-REG" termId="GetServiceCapabilityAnon"
+							isResponse="false" />
+					</tns1:SrcMsgs>
+					<tns1:ResultMsgs>
+						<tns1:ResultMsg contractId="SC1-REG"
+							termId="GetServiceCapabilityAnon" isResponse="true"
+							transformation="GetServiceCapabilityAnonRes.xsl" />
+					</tns1:ResultMsgs>
+				</tns1:Task>
+				<tns1:Task id="GetServiceUser" isMsgDriven="true">
+					<tns1:Out deliveryType="push">
+						<tns1:Operation name="GetService">
+							<Parameters>
+								<Parameter>
+									<Type>String</Type>
+									<Name>Service_ID</Name>
+								</Parameter>
+							</Parameters>
+							<Return>GetServiceReturn</Return>
+						</tns1:Operation>
+					</tns1:Out>
+					<tns1:In isResponse="true">
+						<tns1:Operation name="GetService">
+							<Parameters>
+								<Parameter>
+									<Type>String</Type>
+									<Name>Service_ID</Name>
+								</Parameter>
+							</Parameters>
+							<Return>GetServiceReturn</Return>
+						</tns1:Operation>
+					</tns1:In>
+					<tns1:SrcMsgs transformation="GetServiceUser.xsl">
+						<tns1:SrcMsg contractId="SC2-REG" termId="GetServiceUser"
+							isResponse="false" />
+					</tns1:SrcMsgs>
+					<tns1:ResultMsgs>
+						<tns1:ResultMsg contractId="SC2-REG" termId="GetServiceUser"
+							isResponse="true" transformation="GetServiceUserRes.xsl" />
+					</tns1:ResultMsgs>
+				</tns1:Task>
+				<tns1:Task id="GetServiceCapability" isMsgDriven="true">
+					<tns1:Out deliveryType="push">
+						<tns1:Operation name="GetService">
+							<Parameters>
+								<Parameter>
+									<Type>String</Type>
+									<Name>Service_ID</Name>
+								</Parameter>
+							</Parameters>
+							<Return>GetServiceReturn</Return>
+						</tns1:Operation>
+					</tns1:Out>
+					<tns1:In isResponse="true">
+						<tns1:Operation name="GetService">
+							<Parameters>
+								<Parameter>
+									<Type>String</Type>
+									<Name>Service_ID</Name>
+								</Parameter>
+							</Parameters>
+							<Return>GetServiceReturn</Return>
+						</tns1:Operation>
+					</tns1:In>
+					<tns1:SrcMsgs transformation="GetServiceCapability.xsl">
+						<tns1:SrcMsg contractId="SC2-REG" termId="GetServiceCapability"
+							isResponse="false" />
+					</tns1:SrcMsgs>
+					<tns1:ResultMsgs>
+						<tns1:ResultMsg contractId="SC2-REG" termId="GetServiceCapability"
+							isResponse="true" transformation="GetServiceCapabilityRes.xsl" />
+					</tns1:ResultMsgs>
+				</tns1:Task>
+				<tns1:Task id="GetServiceTechnicalInterface" isMsgDriven="true">
+					<tns1:Out deliveryType="push">
+						<tns1:Operation name="GetService">
+							<Parameters>
+								<Parameter>
+									<Type>String</Type>
+									<Name>Service_ID</Name>
+								</Parameter>
+							</Parameters>
+							<Return>GetServiceReturn</Return>
+						</tns1:Operation>
+					</tns1:Out>
+					<tns1:In isResponse="true">
+						<tns1:Operation name="GetService">
+							<Parameters>
+								<Parameter>
+									<Type>String</Type>
+									<Name>Service_ID</Name>
+								</Parameter>
+							</Parameters>
+							<Return>GetServiceReturn</Return>
+						</tns1:Operation>
+					</tns1:In>
+					<tns1:SrcMsgs transformation="GetServiceTechnicalInterface.xsl">
+						<tns1:SrcMsg contractId="SC2-REG" termId="GetServiceTechnicalInterface"
+							isResponse="false" />
+					</tns1:SrcMsgs>
+					<tns1:ResultMsgs>
+						<tns1:ResultMsg contractId="SC2-REG"
+							termId="GetServiceTechnicalInterface" isResponse="true"
+							transformation="GetServiceTechnicalInterfaceRes.xsl" />
+					</tns1:ResultMsgs>
+				</tns1:Task>
+				<tns1:Task id="GetService" isMsgDriven="true">
+					<tns1:Out deliveryType="push">
+						<tns1:Operation name="GetService">
+							<Parameters>
+								<Parameter>
+									<Type>String</Type>
+									<Name>Service_ID</Name>
+								</Parameter>
+							</Parameters>
+							<Return>GetServiceReturn</Return>
+						</tns1:Operation>
+					</tns1:Out>
+					<tns1:In isResponse="true">
+						<tns1:Operation name="GetService">
+							<Parameters>
+								<Parameter>
+									<Type>String</Type>
+									<Name>Service_ID</Name>
+								</Parameter>
+							</Parameters>
+							<Return>GetServiceReturn</Return>
+						</tns1:Operation>
+					</tns1:In>
+					<tns1:SrcMsgs transformation="GetService.xsl">
+						<tns1:SrcMsg contractId="SP1-REG" termId="GetService"
+							isResponse="false" />
+					</tns1:SrcMsgs>
+					<tns1:ResultMsgs>
+						<tns1:ResultMsg contractId="SP1-REG" termId="GetService"
+							isResponse="true" transformation="GetServiceRes.xsl" />
+					</tns1:ResultMsgs>
+				</tns1:Task>
+				<tns1:Task id="CreateProvider" isMsgDriven="true">
+					<tns1:Out deliveryType="push">
+						<tns1:Operation name="CreateProvider">
+							<Parameters>
+								<Parameter>
+									<Type>CreateProviderValue</Type>
+									<Name>Provider_VALUE</Name>
+								</Parameter>
+							</Parameters>
+							<Return>String</Return>
+						</tns1:Operation>
+					</tns1:Out>
+					<tns1:In isResponse="true">
+						<tns1:Operation name="CreateProvider">
+							<Parameters>
+								<Parameter>
+									<Type>CreateProviderValue</Type>
+									<Name>Provider_VALUE</Name>
+								</Parameter>
+							</Parameters>
+							<Return>String</Return>
+						</tns1:Operation>
+					</tns1:In>
+					<tns1:SrcMsgs transformation="CreateProvider.xsl">
+						<tns1:SrcMsg contractId="SP1-REG" termId="CreateProvider"
+							isResponse="false" />
+					</tns1:SrcMsgs>
+					<tns1:ResultMsgs>
+						<tns1:ResultMsg contractId="SP1-REG" termId="CreateProvider"
+							isResponse="true" transformation="CreateProviderRes.xsl" />
+					</tns1:ResultMsgs>
+				</tns1:Task>
+				<tns1:Task id="CreateService" isMsgDriven="true">
+					<tns1:Out deliveryType="push">
+						<tns1:Operation name="CreateService">
+							<Parameters>
+								<Parameter>
+									<Type>CreateServiceValue</Type>
+									<Name>Service_VALUE</Name>
+								</Parameter>
+							</Parameters>
+							<Return>String</Return>
+						</tns1:Operation>
+					</tns1:Out>
+					<tns1:In isResponse="true">
+						<tns1:Operation name="CreateService">
+							<Parameters>
+								<Parameter>
+									<Type>CreateServiceValue</Type>
+									<Name>Service_VALUE</Name>
+								</Parameter>
+							</Parameters>
+							<Return>String</Return>
+						</tns1:Operation>
+					</tns1:In>
+					<tns1:SrcMsgs transformation="CreateService.xsl">
+						<tns1:SrcMsg contractId="SP1-REG" termId="CreateService"
+							isResponse="false" />
+					</tns1:SrcMsgs>
+					<tns1:ResultMsgs>
+						<tns1:ResultMsg contractId="SP1-REG" termId="CreateService"
+							isResponse="true" transformation="CreateServiceRes.xsl" />
+					</tns1:ResultMsgs>
+				</tns1:Task>
+				<tns1:Task id="CreateTechnicalInterface" isMsgDriven="true">
+					<tns1:Out deliveryType="push">
+						<tns1:Operation name="CreateTechnicalInterface">
+							<Parameters>
+								<Parameter>
+									<Type>CreateTechnicalInterfaceValue</Type>
+									<Name>TechnicalInterface_VALUE</Name>
+								</Parameter>
+							</Parameters>
+							<Return>String</Return>
+						</tns1:Operation>
+					</tns1:Out>
+					<tns1:In isResponse="true">
+						<tns1:Operation name="CreateTechnicalInterface">
+							<Parameters>
+								<Parameter>
+									<Type>CreateTechnicalInterfaceValue</Type>
+									<Name>TechnicalInterface_VALUE</Name>
+								</Parameter>
+							</Parameters>
+							<Return>String</Return>
+						</tns1:Operation>
+					</tns1:In>
+					<tns1:SrcMsgs transformation="CreateTechnicalInterface.xsl">
+						<tns1:SrcMsg contractId="SP1-REG" termId="CreateTechnicalInterface"
+							isResponse="false" />
+					</tns1:SrcMsgs>
+					<tns1:ResultMsgs>
+						<tns1:ResultMsg contractId="SP1-REG"
+							termId="CreateTechnicalInterface" isResponse="true"
+							transformation="CreateTechnicalInterfaceRes.xsl" />
+					</tns1:ResultMsgs>
+				</tns1:Task>
+				<tns1:Task id="SettechnicalInterfaces" isMsgDriven="true">
+					<tns1:Out deliveryType="push">
+						<tns1:Operation name="SettechnicalInterfaces">
+							<Parameters>
+								<Parameter>
+									<Type>String</Type>
+									<Name>Service_ROOTID</Name>
+								</Parameter>
+								<Parameter>
+									<Type>String</Type>
+									<Name>TechnicalInterface_ID</Name>
+								</Parameter>
+							</Parameters>
+							<Return>String</Return>
+						</tns1:Operation>
+					</tns1:Out>
+					<tns1:In isResponse="true">
+						<tns1:Operation name="SettechnicalInterfaces">
+							<Parameters>
+								<Parameter>
+									<Type>String</Type>
+									<Name>Service_ROOTID</Name>
+								</Parameter>
+								<Parameter>
+									<Type>String</Type>
+									<Name>TechnicalInterface_ID</Name>
+								</Parameter>
+							</Parameters>
+							<Return>String</Return>
+						</tns1:Operation>
+					</tns1:In>
+					<tns1:SrcMsgs transformation="SettechnicalInterfaces.xsl">
+						<tns1:SrcMsg contractId="SP1-REG" termId="SettechnicalInterfaces"
+							isResponse="false" />
+					</tns1:SrcMsgs>
+					<tns1:ResultMsgs>
+						<tns1:ResultMsg contractId="SP1-REG" termId="SettechnicalInterfaces"
+							isResponse="true" transformation="SettechnicalInterfacesRes.xsl" />
+					</tns1:ResultMsgs>
+				</tns1:Task>
+				<tns1:Task id="CreateCapability" isMsgDriven="true">
+					<tns1:Out deliveryType="push">
+						<tns1:Operation name="CreateCapability">
+							<Parameters>
+								<Parameter>
+									<Type>CreateCapabilityValue</Type>
+									<Name>Capability_VALUE</Name>
+								</Parameter>
+							</Parameters>
+							<Return>String</Return>
+						</tns1:Operation>
+					</tns1:Out>
+					<tns1:In isResponse="true">
+						<tns1:Operation name="CreateCapability">
+							<Parameters>
+								<Parameter>
+									<Type>CreateCapabilityValue</Type>
+									<Name>Capability_VALUE</Name>
+								</Parameter>
+							</Parameters>
+							<Return>String</Return>
+						</tns1:Operation>
+					</tns1:In>
+					<tns1:SrcMsgs transformation="CreateCapability.xsl">
+						<tns1:SrcMsg contractId="SP1-REG" termId="CreateCapability"
+							isResponse="false" />
+					</tns1:SrcMsgs>
+					<tns1:ResultMsgs>
+						<tns1:ResultMsg contractId="SP1-REG" termId="CreateCapability"
+							isResponse="true" transformation="CreateCapabilityRes.xsl" />
+					</tns1:ResultMsgs>
+				</tns1:Task>
+				<tns1:Task id="Setcapabilities" isMsgDriven="true">
+					<tns1:Out deliveryType="push">
+						<tns1:Operation name="Setcapabilities">
+							<Parameters>
+								<Parameter>
+									<Type>String</Type>
+									<Name>Service_ROOTID</Name>
+								</Parameter>
+								<Parameter>
+									<Type>String</Type>
+									<Name>Capability_ID</Name>
+								</Parameter>
+							</Parameters>
+							<Return>String</Return>
+						</tns1:Operation>
+					</tns1:Out>
+					<tns1:In isResponse="true">
+						<tns1:Operation name="Setcapabilities">
+							<Parameters>
+								<Parameter>
+									<Type>String</Type>
+									<Name>Service_ROOTID</Name>
+								</Parameter>
+								<Parameter>
+									<Type>String</Type>
+									<Name>Capability_ID</Name>
+								</Parameter>
+							</Parameters>
+							<Return>String</Return>
+						</tns1:Operation>
+					</tns1:In>
+					<tns1:SrcMsgs transformation="Setcapabilities.xsl">
+						<tns1:SrcMsg contractId="SP1-REG" termId="Setcapabilities"
+							isResponse="false" />
+					</tns1:SrcMsgs>
+					<tns1:ResultMsgs>
+						<tns1:ResultMsg contractId="SP1-REG" termId="Setcapabilities"
+							isResponse="true" transformation="SetcapabilitiesRes.xsl" />
+					</tns1:ResultMsgs>
+				</tns1:Task>
+			</Tasks>
+		</Role>
+	</Roles>
+	<Contracts>
+		<Contract id="SC1-REG" type="permissive" ruleFile="sc1-reg.drl">
+			<LinkedFacts>
+				<Fact name="RegisteredUsers" />
+				<Fact name="UserInvocationStat" />
+				<Fact name="ServiceInvocationStat" />
+			</LinkedFacts>
+			<Abstract>false</Abstract>
+			<State>Incipient</State>
+			<Terms>
+				<Term id="GetServiceCapabilityAnon" name="GetServiceCapabilityAnon"
+					messageType="push" deonticType="permission">
+					<Operation name="GetServiceCapabilityAnon">
+						<Parameters>
+							<Parameter>
+								<Type>String</Type>
+								<Name>User_ID</Name>
+							</Parameter>
+							<Parameter>
+								<Type>String</Type>
+								<Name>Service_ID</Name>
+							</Parameter>
+						</Parameters>
+						<Return>GetCapabilityReturn</Return>
+					</Operation>
+					<Direction>AtoB</Direction>
+					<Description>Term for </Description>
+				</Term>
+			</Terms>
+			<RoleAID>SC1</RoleAID>
+			<RoleBID>REG</RoleBID>
+			<Description>This is the contract btwn the Consumer1 and Registry
+			</Description>
+		</Contract>
+		<Contract id="SC2-REG" type="permissive" ruleFile="sc2-reg.drl">
+			<LinkedFacts>
+				<Fact name="RegisteredUsers" />
+				<Fact name="UserInvocationStat" />
+				<Fact name="ServiceInvocationStat" />
+			</LinkedFacts>
+			<Abstract>false</Abstract>
+			<State>Incipient</State>
+			<Terms>
+				<Term id="GetServiceUser" name="GetServiceUser">
+					<Operation name="GetServiceUser">
+						<Parameters>
+							<Parameter>
+								<Type>String</Type>
+								<Name>User_ID</Name>
+							</Parameter>
+							<Parameter>
+								<Type>String</Type>
+								<Name>Service_ID</Name>
+							</Parameter>
+						</Parameters>
+						<Return>GetServiceReturn</Return>
+					</Operation>
+					<Direction>AtoB</Direction>
+					<Description>Term for </Description>
+				</Term>
+				<Term id="GetServiceCapability" name="GetServiceCapability" messageType="push" deonticType="permission">
+					<Operation name="GetServiceCapability">
+						<Parameters>
+							<Parameter>
+								<Type>String</Type>
+								<Name>User_ID</Name>
+							</Parameter>
+							<Parameter>
+								<Type>String</Type>
+								<Name>Service_ID</Name>
+							</Parameter>
+						</Parameters>
+						<Return>GetCapabilityReturn</Return>
+					</Operation>
+					<Direction>AtoB</Direction>
+					<Description>Term for </Description>
+				</Term>
+				<Term id="GetServiceTechnicalInterface" name="GetServiceTechnicalInterface" messageType="push" deonticType="permission">
+					<Operation name="GetServiceTechnicalInterface">
+						<Parameters>
+							<Parameter>
+								<Type>String</Type>
+								<Name>User_ID</Name>
+							</Parameter>
+							<Parameter>
+								<Type>String</Type>
+								<Name>Service_ID</Name>
+							</Parameter>
+						</Parameters>
+						<Return>GetTechnicalInterfaceReturn</Return>
+					</Operation>
+					<Direction>AtoB</Direction>
+					<Description>Term for </Description>
+				</Term>
+			</Terms>
+			<RoleAID>SC2</RoleAID>
+			<RoleBID>REG</RoleBID>
+			<Description>This is the contract btwn the Consumer2 and Registry
+			</Description>
+		</Contract>
+		<Contract id="SP1-REG" type="permissive" ruleFile="sp1-reg.drl">
+			<LinkedFacts>
+				<Fact name="RegisteredUsers" />
+				<Fact name="UserInvocationStat" />
+				<Fact name="ServiceInvocationStat" />
+			</LinkedFacts>
+			<Abstract>false</Abstract>
+			<State>Incipient</State>
+			<Terms>
+				<Term id="GetService" name="GetService" messageType="push" deonticType="permission">
+					<Operation name="GetService">
+						<Parameters>
+							<Parameter>
+								<Type>String</Type>
+								<Name>User_ID</Name>
+							</Parameter>
+							<Parameter>
+								<Type>String</Type>
+								<Name>Service_ID</Name>
+							</Parameter>
+						</Parameters>
+						<Return>GetServiceReturn</Return>
+					</Operation>
+					<Direction>AtoB</Direction>
+					<Description>Term for </Description>
+				</Term>
+				<Term id="CreateProvider" name="CreateProvider" messageType="push" deonticType="permission">
+					<Operation name="CreateProvider">
+						<Parameters>
+							<Parameter>
+								<Type>String</Type>
+								<Name>User_ID</Name>
+							</Parameter>
+							<Parameter>
+								<Type>String</Type>
+								<Name>guid</Name>
+							</Parameter>
+						</Parameters>
+						<Return>String</Return>
+					</Operation>
+					<Direction>AtoB</Direction>
+					<Description>Term for </Description>
+				</Term>
+				<Term id="CreateService" name="CreateService" messageType="push" deonticType="permission">
+					<Operation name="CreateService">
+						<Parameters>
+							<Parameter>
+								<Type>String</Type>
+								<Name>User_ID</Name>
+							</Parameter>
+							<Parameter>
+								<Type>String</Type>
+								<Name>guid</Name>
+							</Parameter>
+							<Parameter>
+								<Type>String</Type>
+								<Name>name</Name>
+							</Parameter>
+							<Parameter>
+								<Type>String</Type>
+								<Name>provider</Name>
+							</Parameter>
+							<Parameter>
+								<Type>String</Type>
+								<Name>publicationTime</Name>
+							</Parameter>
+							<Parameter>
+								<Type>String</Type>
+								<Name>version</Name>
+							</Parameter>
+							<Parameter>
+								<Type>String</Type>
+								<Name>nature</Name>
+							</Parameter>
+						</Parameters>
+						<Return>String</Return>
+					</Operation>
+					<Direction>AtoB</Direction>
+					<Description>Term for </Description>
+				</Term>
+				<Term id="CreateTechnicalInterface" name="CreateTechnicalInterface" messageType="push" deonticType="permission">
+					<Operation name="CreateTechnicalInterface">
+						<Parameters>
+							<Parameter>
+								<Type>String</Type>
+								<Name>User_ID</Name>
+							</Parameter>
+							<Parameter>
+								<Type>String</Type>
+								<Name>name</Name>
+							</Parameter>
+							<Parameter>
+								<Type>String</Type>
+								<Name>type</Name>
+							</Parameter>
+						</Parameters>
+						<Return>String</Return>
+					</Operation>
+					<Direction>AtoB</Direction>
+					<Description>Term for </Description>
+				</Term>
+				<Term id="SettechnicalInterfaces" name="SettechnicalInterfaces" messageType="push" deonticType="permission">
+					<Operation name="SettechnicalInterfaces">
+						<Parameters>
+							<Parameter>
+								<Type>String</Type>
+								<Name>User_ID</Name>
+							</Parameter>
+							<Parameter>
+								<Type>String</Type>
+								<Name>Service_ROOTID</Name>
+							</Parameter>
+							<Parameter>
+								<Type>String</Type>
+								<Name>TechnicalInterface_ID</Name>
+							</Parameter>
+						</Parameters>
+						<Return>String</Return>
+					</Operation>
+					<Direction>AtoB</Direction>
+					<Description>Term for </Description>
+				</Term>
+				<Term id="CreateCapability" name="CreateCapability" messageType="push" deonticType="permission">
+					<Operation name="CreateCapability">
+						<Parameters>
+							<Parameter>
+								<Type>String</Type>
+								<Name>User_ID</Name>
+							</Parameter>
+							<Parameter>
+								<Type>String</Type>
+								<Name>action_name</Name>
+							</Parameter>
+							<Parameter>
+								<Type>String</Type>
+								<Name>name</Name>
+							</Parameter>
+						</Parameters>
+						<Return>String</Return>
+					</Operation>
+					<Direction>AtoB</Direction>
+					<Description>Term for </Description>
+				</Term>
+				<Term id="Setcapabilities" name="Setcapabilities" messageType="push" deonticType="permission">
+					<Operation name="Setcapabilities">
+						<Parameters>
+							<Parameter>
+								<Type>String</Type>
+								<Name>User_ID</Name>
+							</Parameter>
+							<Parameter>
+								<Type>String</Type>
+								<Name>Service_ROOTID</Name>
+							</Parameter>
+							<Parameter>
+								<Type>String</Type>
+								<Name>Capability_ID</Name>
+							</Parameter>
+						</Parameters>
+						<Return>String</Return>
+					</Operation>
+					<Direction>AtoB</Direction>
+					<Description>Term for </Description>
+				</Term>
+			</Terms>
+			<RoleAID>SP1</RoleAID>
+			<RoleBID>REG</RoleBID>
+			<Description>This is the contract btwn the ServiceProvider and
+				Registry</Description>
+		</Contract>
+	</Contracts>
+	<PlayerBindings>
+		<PlayerBinding id="Registry">
+			<Endpoint>http://ec2-50-16-55-169.compute-1.amazonaws.com/raas.usdl.server/services/servicerepository
+			</Endpoint>
+			<Roles>
+				<RoleID>REG</RoleID>
+			</Roles>
+			<Description>Description</Description>
+		</PlayerBinding>
+	</PlayerBindings>
+	<OrganiserBinding>OrganiserBinding</OrganiserBinding>
+	<Description>This is the composite to generate the front end for RaaS
+		service</Description>
+</tns:SMC>

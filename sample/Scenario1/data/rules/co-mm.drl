@@ -1,0 +1,49 @@
+import au.edu.swin.ict.road.composite.rules.events.contract.MessageRecievedEvent;
+import au.edu.swin.ict.road.composite.rules.events.contract.ObligationComplianceEvent;
+import au.edu.swin.ict.road.composite.rules.events.contract.TermExecutedEvent;
+import au.edu.swin.ict.road.composite.contract.Contract;
+import au.edu.swin.ict.road.regulator.FactTupleSpace;
+
+/** Global Variables **/
+global Contract contract;
+global FactTupleSpace fts;
+
+/** Events **/
+declare MessageRecievedEvent
+    @role(event)
+end
+
+declare TermExecutedEvent
+    @role(event)
+    @expires(24h)
+end
+
+declare ObligationComplianceEvent
+    @role(event)
+    @expires(24h)
+end
+
+/** Permission Rules **/
+rule "complain"
+    when
+		$event : MessageRecievedEvent(operationName == "complain",  response ==false)
+    then
+    	System.out.println("Complain from MM to CO");
+		$event.setBlocked(false);	
+		//Logic to inspect the message
+	
+		$event.triggerEvent("ComplainRcvd");
+		
+end
+rule "complainResponse"
+    when
+		$event : MessageRecievedEvent(operationName == "complain",  response ==true)
+    then
+    	System.out.println("Complain response from CO to MM");
+		$event.setBlocked(false);	
+		//Logic to inspect the message
+	
+		$event.triggerEvent("MMNotif"); 
+		//$event.triggerEvent("CaseClosed");
+		
+end

@@ -1,0 +1,55 @@
+import au.edu.swin.ict.road.composite.rules.events.contract.MessageRecievedEvent;
+import au.edu.swin.ict.road.composite.rules.events.contract.ObligationComplianceEvent;
+import au.edu.swin.ict.road.composite.rules.events.contract.TermExecutedEvent;
+import au.edu.swin.ict.road.composite.contract.Contract;
+import au.edu.swin.ict.road.composite.message.MessageWrapper;
+import au.edu.swin.ict.road.regulator.FactObject;
+import au.edu.swin.ict.road.regulator.FactTupleSpace;
+import au.edu.swin.ict.road.regulator.FactTupleSpaceRow;
+import java.util.List;
+import au.edu.swin.ict.road.composite.message.DroolsMsgUtil;
+
+/** Global Variables **/
+global Contract contract;
+global FactTupleSpace fts;
+
+/** Events **/
+declare MessageRecievedEvent
+    @role(event)
+end
+
+declare TermExecutedEvent
+    @role(event)
+    @expires(24h)
+end
+
+declare ObligationComplianceEvent
+    @role(event)
+    @expires(24h)
+end
+
+/** Permission Rules **/
+rule "GetServiceCapabilityAnon"
+	salience 50
+    when
+		$event : MessageRecievedEvent(operationName == "GetServiceCapabilityAnon")
+    then
+    	System.out.println("GetServiceCapabilityAnon called");
+    	MessageWrapper mw = $event.getMessageWrapper();
+		boolean blocked = DroolsMsgUtil.isBlocked(mw, fts);
+		$event.setBlocked(blocked);
+		if(!blocked && !mw.isResponse())
+		{
+			DroolsMsgUtil.updateUserInvStat(mw, fts);
+			DroolsMsgUtil.updateServiceInvStat(mw, fts);
+		}
+end
+
+/* rule "GetServiceCapabilityAnon2"
+	salience 30
+    when
+		$msg : MessageRecievedEvent(operationName == "GetServiceCapabilityAnon")
+    then
+    	System.out.println("GetServiceCapabilityAnon called");
+    	
+end */

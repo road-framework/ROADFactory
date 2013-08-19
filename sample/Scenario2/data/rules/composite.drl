@@ -1,0 +1,67 @@
+import au.edu.swin.ict.road.composite.rules.events.composite.MessageRecievedAtContractEvent;
+import au.edu.swin.ict.road.composite.rules.events.composite.MessageRecievedAtDestinationEvent;
+import au.edu.swin.ict.road.composite.rules.events.composite.MessageRecievedAtSourceEvent;
+import au.edu.swin.ict.road.composite.rules.events.composite.RoutingFailureEvent;
+import au.edu.swin.ict.road.composite.rules.events.composite.RoutingSuccessEvent;
+import au.edu.swin.ict.road.composite.IInternalOrganiserView;
+import au.edu.swin.ict.road.composite.message.MessageWrapper;
+
+/** Global Variables **/
+global IInternalOrganiserView organiser;
+
+/** Events **/
+declare MessageRecievedAtDestinationEvent
+    @role(event)
+end
+
+declare MessageRecievedAtContractEvent
+    @role(event)
+end
+
+declare MessageRecievedAtSourceEvent
+    @role(event)
+end
+
+declare RoutingFailureEvent
+    @role(event)
+end
+
+declare RoutingSuccessEvent
+    @role(event)
+end
+
+/** Begin rules **/
+rule "MessageRecievedAtSource"
+	when
+		$event : MessageRecievedAtSourceEvent()
+	then
+		organiser.sendToOrganiser(new MessageWrapper($event));
+end
+
+rule "MessageRecievedAtDestination"
+	when
+		$event : MessageRecievedAtDestinationEvent()
+	then
+		organiser.sendToOrganiser(new MessageWrapper($event));
+end
+
+rule "MessageRecievedAtContract"
+	when
+		$event : MessageRecievedAtContractEvent()
+	then
+		organiser.sendToOrganiser(new MessageWrapper($event));
+end
+
+rule "RoutingSuccess"
+	when
+		$event : RoutingSuccessEvent()
+	then
+		organiser.sendToOrganiser(new MessageWrapper($event));
+end
+
+rule "RoutingFailure"
+	when
+		$event : RoutingFailureEvent()
+	then
+		organiser.sendToOrganiser(new MessageWrapper($event));
+end

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://www.swin.edu.au/ict/road/smc"
+	xmlns:tns="http://www.swin.edu.au/ict/road/smc"
+	xmlns:role="http://www.swin.edu.au/ict/road/role"
+	xmlns:contract="http://www.swin.edu.au/ict/road/contract"
+	xmlns:player="http://www.swin.edu.au/ict/road/player"
+	xmlns:fact="http://www.swin.edu.au/ict/road/fact"
+	xmlns:ser="http://www.ict.swin.edu.au/serendip/types"
+	elementFormDefault="unqualified" version="1.3"
+	xmlns:Q1="http://www.ict.swin.edu.au/serendip/types" xmlns:pref="http://www.example.org/RuntimeSchema">
+
+	<!-- schema imports -->
+	<xsd:import schemaLocation="serendip.xsd"
+		namespace="http://www.ict.swin.edu.au/serendip/types">
+	</xsd:import>
+	<xsd:import namespace="http://www.swin.edu.au/ict/road/contract"
+		schemaLocation="contract.xsd" />
+	<xsd:import namespace="http://www.swin.edu.au/ict/road/role"
+		schemaLocation="role.xsd" />
+	<xsd:import namespace="http://www.swin.edu.au/ict/road/player"
+		schemaLocation="player.xsd" />
+	<xsd:import namespace="http://www.ict.swin.edu.au/serendip/types"
+		schemaLocation="serendip.xsd" />
+	<xsd:import namespace="http://www.swin.edu.au/ict/road/fact"
+		schemaLocation="fact.xsd" />
+
+	<!-- ROAD self-managed composite -->
+	<xsd:import schemaLocation="RuntimeSchema.xsd" namespace="http://www.example.org/RuntimeSchema"></xsd:import>
+	<xsd:element name="SMC">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="ProcessDefinitions"
+					type="ser:ProcessDefinitionsType" maxOccurs="1" minOccurs="0">
+				</xsd:element>
+				<xsd:element name="BehaviorTerms"
+					type="ser:BehaviorTermsType" maxOccurs="1" minOccurs="0">
+				</xsd:element>
+				<xsd:element name="Messages" type="ser:MessagesType"
+					maxOccurs="1" minOccurs="0">
+				</xsd:element>
+				<xsd:element name="Events" type="ser:EventsType"
+					maxOccurs="1" minOccurs="0">
+				</xsd:element>
+				<xsd:element name="Facts" minOccurs="0" maxOccurs="1">
+					<xsd:complexType>
+						<xsd:sequence>
+							<xsd:element name="Fact"
+								type="fact:FactType" minOccurs="1" maxOccurs="unbounded" />
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="Roles" minOccurs="0" maxOccurs="1">
+					<xsd:complexType>
+						<xsd:sequence>
+							<xsd:element name="Role"
+								type="role:RoleType" minOccurs="0" maxOccurs="unbounded" />
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="Contracts" minOccurs="0"
+					maxOccurs="1">
+					<xsd:complexType>
+						<xsd:sequence>
+							<xsd:element name="Contract"
+								type="contract:ContractType" minOccurs="0"
+								maxOccurs="unbounded" />
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="PlayerBindings" minOccurs="0"
+					maxOccurs="1">
+					<xsd:complexType>
+						<xsd:sequence>
+							<xsd:element name="PlayerBinding"
+								type="player:PlayerBindingType" minOccurs="0"
+								maxOccurs="unbounded" />
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="OrganiserBinding" type="xsd:string"
+					minOccurs="0" maxOccurs="1" />
+				<xsd:element name="Description" type="xsd:string"
+					minOccurs="0" maxOccurs="1" />
+				<xsd:element name="MessageAnalyzers"
+					type="ser:MessageAnalyzersType" maxOccurs="1" minOccurs="0">
+				</xsd:element>
+				<xsd:element name="Runtime" type="pref:RunTime"
+					maxOccurs="1" minOccurs="0">
+				</xsd:element>
+			</xsd:sequence>
+
+			<!-- smc attributes -->
+			<xsd:attribute name="name" type="xsd:string" use="required" />
+			<xsd:attribute name="dataDir" type="xsd:string"
+				use="required" />
+			<xsd:attribute name="routingRuleFile" type="xsd:string"
+				use="required" />
+			<xsd:attribute name="compositeRuleFile" type="xsd:string"
+				use="required" />
+
+		</xsd:complexType>
+	</xsd:element>
+
+
+</xsd:schema>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://www.swin.edu.au/ict/road/contract" xmlns:tns="http://www.swin.edu.au/ict/road/contract"
+	xmlns:term="http://www.swin.edu.au/ict/road/term" xmlns:monitor="http://www.swin.edu.au/ict/road/monitor"
+	xmlns:ser="http://www.ict.swin.edu.au/serendip/types"
+	elementFormDefault="unqualified" version="1.4"
+	xmlns:Q1="http://www.ict.swin.edu.au/serendip/types">
+
+	<!-- schema imports -->
+	<xsd:import schemaLocation="serendip.xsd"
+		namespace="http://www.ict.swin.edu.au/serendip/types"></xsd:import>
+	<xsd:import namespace="http://www.swin.edu.au/ict/road/term"
+		schemaLocation="term.xsd" />
+	<xsd:import namespace="http://www.swin.edu.au/ict/road/monitor"
+		schemaLocation="monitor.xsd" />
+	<xsd:import namespace="http://www.ict.swin.edu.au/serendip/types"
+		schemaLocation="serendip.xsd" />
+
+	<xsd:complexType name="ContractLinkedFactType">
+		<xsd:attribute name="name" type="xsd:string" use="required" />
+	</xsd:complexType>
+
+	<!-- contract type -->
+	<xsd:complexType name="ContractType">
+		<xsd:sequence>
+			<xsd:element name="Types" minOccurs="1" maxOccurs="1">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:any />
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="LinkedFacts" minOccurs="0" maxOccurs="1">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="Fact" type="tns:ContractLinkedFactType"
+							minOccurs="1" maxOccurs="unbounded" />
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="State" type="xsd:string" minOccurs="1"
+				maxOccurs="1" />
+			<xsd:element name="Terms" minOccurs="0" maxOccurs="1">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="Term" type="term:TermType"
+							minOccurs="0" maxOccurs="unbounded" />
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="Monitors" minOccurs="0" maxOccurs="1">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="Monitor" type="monitor:MonitorRoleType"
+							minOccurs="0" maxOccurs="unbounded" />
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="RoleAID" type="xsd:string" minOccurs="1"
+				maxOccurs="1" />
+			<xsd:element name="RoleBID" type="xsd:string" minOccurs="1"
+				maxOccurs="1" />
+			<xsd:element name="Description" type="xsd:string"
+				minOccurs="0" maxOccurs="1" />
+		</xsd:sequence>
+
+		<!-- contract attributes -->
+		<xsd:attribute name="id" type="xsd:string" use="required" />
+		<xsd:attribute name="name" type="xsd:string" />
+		<xsd:attribute name="type" type="xsd:string" />
+		<xsd:attribute name="ruleFile" type="xsd:string" use="required" />
+	</xsd:complexType>
+
+</xsd:schema>

@@ -1,0 +1,59 @@
+import au.edu.swin.ict.road.composite.rules.events.contract.MessageRecievedEvent;
+import au.edu.swin.ict.road.composite.rules.events.contract.ObligationComplianceEvent;
+import au.edu.swin.ict.road.composite.rules.events.contract.TermExecutedEvent;
+import au.edu.swin.ict.road.composite.contract.Contract;
+import au.edu.swin.ict.road.regulator.FactTupleSpace;
+
+/** Global Variables **/
+global Contract contract;
+global FactTupleSpace fts;
+
+/** Events **/
+declare MessageRecievedEvent
+    @role(event)
+end
+
+declare TermExecutedEvent
+    @role(event)
+    @expires(24h)
+end
+
+declare ObligationComplianceEvent
+    @role(event)
+    @expires(24h)
+end
+
+/** Permission Rules **/
+rule "orderRepair"
+    when
+		$msg : MessageRecievedEvent(operationName == "orderRepair" , response ==false)
+    then
+    	System.out.println("orderRepair request interpretation");
+    	//All the rules to evaluate the message is here. 
+		$msg.setBlocked(false);	
+		$msg.triggerEvent("RepairReqd"); 
+end
+
+rule "orderRepairResponse"
+    when
+		$msg : MessageRecievedEvent(operationName == "orderRepair" , response ==true)
+    then
+    	System.out.println("orderRepair response interpretation");
+    	//All the rules to evaluate the message is here. 
+		$msg.setBlocked(false);	
+		$msg.triggerEvent("RepairSuccess"); 
+		#$msg.triggerEvent("RepairFailed"); 
+end
+
+
+rule "payRepair"
+    when
+		$msg : MessageRecievedEvent(operationName == "payRepair" , response ==false)
+    then
+    	System.out.println("payRepair interpretation");
+    	//All the rules to evaluate the message is here. 
+		$msg.setBlocked(false);	
+		$msg.triggerEvent("GRPaid");
+		
+end
+ 

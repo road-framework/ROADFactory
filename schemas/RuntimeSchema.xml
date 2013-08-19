@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tns:RunTime xmlns:tns="http://www.example.org/RuntimeSchema" xmlns:tns1="http://www.ict.swin.edu.au/serendip/types" xmlns:tns2="http://www.swin.edu.au/ict/road/term" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.example.org/RuntimeSchema RuntimeSchema.xsd ">
+  <tns:ProcessInstances>
+    <tns:ProcessInstance>
+      <tns:pid>tns:pid</tns:pid>
+      <tns:Status>tns:Status</tns:Status>
+      <tns:RTTasks/>
+    </tns:ProcessInstance>
+  </tns:ProcessInstances>
+  <tns:SystemProperties>
+    <tns:Property Key="" Value=""/>
+  </tns:SystemProperties>
+</tns:RunTime>

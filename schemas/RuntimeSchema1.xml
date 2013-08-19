@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tns:RunTime xmlns:tns="http://www.example.org/RuntimeSchema" xmlns:tns1="http://www.ict.swin.edu.au/serendip/types" xmlns:tns2="http://www.swin.edu.au/ict/road/term" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.example.org/RuntimeSchema RuntimeSchema.xsd ">
+  <tns:ProcessInstances>
+    <tns:ProcessInstance>
+      <tns:pid>tns:pid</tns:pid>
+      <tns:pDef>tns:pDef</tns:pDef>
+      <tns:Status>tns:Status</tns:Status>
+      <tns:RTTasks>
+        <tns:RTTask status="">
+          <tns:TaskType id="" isMsgDriven="true" msgAnalyser="">
+            <tns1:Out deliveryType="" isResponse="false">
+              <tns1:Operation name="">
+                <Parameters>
+                  <Parameter>
+                    <Type>Type</Type>
+                    <Name>Name</Name>
+                  </Parameter>
+                </Parameters>
+                <Return>Return</Return>
+              </tns1:Operation>
+            </tns1:Out>
+            <tns1:In isResponse="false">
+              <tns1:Operation name="">
+                <Parameters>
+                  <Parameter>
+                    <Type>Type</Type>
+                    <Name>Name</Name>
+                  </Parameter>
+                </Parameters>
+                <Return>Return</Return>
+              </tns1:Operation>
+            </tns1:In>
+            <tns1:SrcMsgs transformation="">
+              <tns1:SrcMsg contractId="" isResponse="false" termId=""/>
+            </tns1:SrcMsgs>
+            <tns1:ResultMsgs>
+              <tns1:ResultMsg contractId="" isResponse="false" termId="" transformation=""/>
+            </tns1:ResultMsgs>
+          </tns:TaskType>
+        </tns:RTTask>
+      </tns:RTTasks>
+    </tns:ProcessInstance>
+  </tns:ProcessInstances>
+  <tns:SystemProperties>
+    <tns:Property Key="" Value=""/>
+  </tns:SystemProperties>
+</tns:RunTime>
