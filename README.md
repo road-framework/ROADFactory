@@ -80,3 +80,8 @@ Bug report
 * mkapuruge at swin dot edu dot au
 * Make sure to attach all log files ( %TOMCAT_HOME%/logs/*,  %TOMCAT_HOME%/bin/Road.log)  
 And provide as much details as possible. 
+
+Achnowledgement
+-----------------------------
+This project has been researched & developed by Swinburne University of Technology partly with the support of Smart Services CRC. To find out more about Smart Services please visit www.smartservicescrc.com.au.
+
