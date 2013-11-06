@@ -1,5 +1,5 @@
 ROADfactory 2.0
-===========
+=====================================
 
 ROADfactory version 2.0. A part of the ROAD tool chain.  
 Developed by the ROAD team, Swinburne University of Technology (http://www.swinburne.edu.au/ict/research/cs3/road/).  
